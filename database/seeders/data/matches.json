@@ -1,0 +1,850 @@
+[
+    {
+        "id": 15,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 16,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 17,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 18,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 19,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 20,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 21,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 22,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 23,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 24,
+        "fecha": "2025-05-30 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 25,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 26,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 27,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 28,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 29,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 30,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 6,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 31,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 32,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 33,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 34,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 35,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 36,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 37,
+        "fecha": "2025-05-31 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 38,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 39,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 40,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 41,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 43,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 44,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 45,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 47,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 48,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 49,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 50,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 51,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 52,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 53,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 54,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 55,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 56,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 57,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 58,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 59,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 60,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 61,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 6,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 62,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 63,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 64,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 65,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 66,
+        "fecha": "2025-06-01 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 67,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 68,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 69,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 70,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 71,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 5,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 72,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 73,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 5,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 74,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 5,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 75,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 76,
+        "fecha": "2025-06-02 00:00:00",
+        "ganador_id": 5,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 77,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 78,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 79,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 80,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 81,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 82,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 83,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 84,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 85,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 86,
+        "fecha": "2025-06-03 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 87,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 88,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 89,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 90,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 91,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 92,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 93,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 94,
+        "fecha": "2025-06-04 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 95,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 96,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 97,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 98,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 4,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 99,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 100,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 101,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 102,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 1,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 4
+    },
+    {
+        "id": 103,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 1
+    },
+    {
+        "id": 104,
+        "fecha": "2025-06-06 00:00:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 107,
+        "fecha": "2025-08-27 00:48:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 3
+    },
+    {
+        "id": 108,
+        "fecha": "2026-04-08 06:40:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 109,
+        "fecha": "2026-04-08 06:42:00",
+        "ganador_id": 2,
+        "perdedor_id": 5,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 110,
+        "fecha": "2026-04-08 06:43:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 111,
+        "fecha": "2026-04-08 06:43:00",
+        "ganador_id": 1,
+        "perdedor_id": 4,
+        "victorias_ganador": 5,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 112,
+        "fecha": "2026-04-08 06:44:00",
+        "ganador_id": 2,
+        "perdedor_id": 4,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 113,
+        "fecha": "2026-04-08 06:56:00",
+        "ganador_id": 1,
+        "perdedor_id": 7,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 114,
+        "fecha": "2026-04-08 06:57:00",
+        "ganador_id": 2,
+        "perdedor_id": 7,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 2
+    },
+    {
+        "id": 115,
+        "fecha": "2026-04-08 06:57:00",
+        "ganador_id": 5,
+        "perdedor_id": 7,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 116,
+        "fecha": "2026-04-08 06:58:00",
+        "ganador_id": 7,
+        "perdedor_id": 4,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 117,
+        "fecha": "2026-04-08 06:58:00",
+        "ganador_id": 7,
+        "perdedor_id": 6,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 118,
+        "fecha": "2026-04-08 06:58:00",
+        "ganador_id": 6,
+        "perdedor_id": 4,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 119,
+        "fecha": "2026-04-08 06:59:00",
+        "ganador_id": 7,
+        "perdedor_id": 2,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 120,
+        "fecha": "2026-04-08 06:59:00",
+        "ganador_id": 5,
+        "perdedor_id": 4,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 121,
+        "fecha": "2026-05-12 14:31:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 122,
+        "fecha": "2026-05-20 23:25:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 123,
+        "fecha": "2026-05-20 23:25:00",
+        "ganador_id": 1,
+        "perdedor_id": 2,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    },
+    {
+        "id": 124,
+        "fecha": "2026-05-20 23:28:00",
+        "ganador_id": 1,
+        "perdedor_id": 3,
+        "victorias_ganador": 3,
+        "victorias_perdedor": 0
+    }
+]
