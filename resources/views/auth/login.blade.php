@@ -13,12 +13,16 @@
     <link href="{{ asset('velzon/css/icons.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('velzon/css/app.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('velzon/css/custom.min.css') }}" rel="stylesheet" type="text/css">
+    <style>
+        .login-card { margin-top: 9rem; }
+        @media (min-width: 768px) { .login-card { margin-top: 18rem; } }
+    </style>
 </head>
 
 <body>
     <div class="auth-page-wrapper pt-5">
-        <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
-            <div class="bg-overlay"></div>
+        <div class="auth-one-bg-position auth-one-bg" id="auth-particles" style="background-image: url({{ asset('images/logo.png') }}); background-size: contain; background-repeat: no-repeat; background-position: center top;">
+            <div class="bg-overlay" style="opacity: .35;"></div>
 
             <div class="shape">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
@@ -29,22 +33,9 @@
 
         <div class="auth-page-content">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="text-center mt-sm-5 mb-4 text-white-50">
-                            <div>
-                                <a href="{{ route('dashboard') }}" class="d-inline-block auth-logo">
-                                    <img src="{{ asset('images/logo.jpg') }}" alt="Ultra Street Fighter II" class="rounded" style="max-width: 320px; width: 100%;">
-                                </a>
-                            </div>
-                            <p class="mt-3 fs-15 fw-medium">Registro de matches y ranking</p>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-6 col-xl-5">
-                        <div class="card mt-4">
+                        <div class="card login-card">
                             <div class="card-body p-4">
                                 <div class="text-center mt-2">
                                     <h5 class="text-primary">Bienvenido</h5>
@@ -84,10 +75,6 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mt-4 text-center">
-                            <p class="mb-0"><a href="{{ route('dashboard') }}" class="fw-semibold text-primary text-decoration-underline">Volver al ranking</a></p>
                         </div>
                     </div>
                 </div>
