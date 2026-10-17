@@ -26,5 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/matches', [MatchController::class, 'store'])->name('matches.store');
     Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
 
+    Route::get('/players', [PlayerController::class, 'index'])->name('players.index');
     Route::post('/players', [PlayerController::class, 'store'])->name('players.store');
+    Route::put('/players/{player}', [PlayerController::class, 'update'])->name('players.update');
 });

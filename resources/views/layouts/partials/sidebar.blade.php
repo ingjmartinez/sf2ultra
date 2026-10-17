@@ -24,6 +24,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link @if (request()->routeIs('players.*')) active @endif" href="{{ route('players.index') }}">
+                        <i class="ri-team-line"></i> <span>Players</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalTemporada">
                         <i class="ri-calendar-event-line"></i> <span>Temporada {{ $season ?? now()->year }}</span>
                     </a>
