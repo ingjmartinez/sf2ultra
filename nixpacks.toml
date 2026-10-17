@@ -7,3 +7,6 @@ cmds = [
   "mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache",
   "chmod -R 777 storage bootstrap/cache"
 ]
+
+[start]
+cmd = "mkdir -p /app/bootstrap/cache && chmod -R 777 /app/storage /app/bootstrap/cache && node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
