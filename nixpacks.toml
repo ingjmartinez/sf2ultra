@@ -1,2 +1,9 @@
 [variables]
 NIXPACKS_NODE_VERSION = "22"
+
+[phases.build]
+cmds = [
+  "...",
+  "mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache",
+  "chmod -R 777 storage bootstrap/cache"
+]
