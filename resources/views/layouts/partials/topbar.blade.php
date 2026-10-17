@@ -3,11 +3,11 @@
         <div class="navbar-header">
             <div class="d-flex">
                 <div class="navbar-brand-box horizontal-logo">
-                    <a href="{{ route('dashboard') }}" class="logo logo-dark">
+                    <a href="{{ route('ranking.index') }}" class="logo logo-dark">
                         <span class="logo-sm"><span class="fw-bold fs-16 brand-text-sm">SF2</span></span>
                         <span class="logo-lg"><span class="fw-bold fs-18 text-dark brand-text">Street Fighter 2</span></span>
                     </a>
-                    <a href="{{ route('dashboard') }}" class="logo logo-light">
+                    <a href="{{ route('ranking.index') }}" class="logo logo-light">
                         <span class="logo-sm"><span class="fw-bold fs-16 brand-text-sm">SF2</span></span>
                         <span class="logo-lg"><span class="fw-bold fs-18 text-white brand-text">Street Fighter 2</span></span>
                     </a>

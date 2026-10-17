@@ -41,7 +41,7 @@
                                 <h4 class="mb-sm-0">@yield('page-title', 'Registro de Matches')</h4>
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Street Fighter 2</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ route('ranking.index') }}">Street Fighter 2</a></li>
                                         <li class="breadcrumb-item active">@yield('page-title', 'Registro de Matches')</li>
                                     </ol>
                                 </div>

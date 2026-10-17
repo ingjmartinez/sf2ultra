@@ -16,8 +16,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', DashboardController::class)->name('dashboard');
-    Route::get('/ranking', RankingController::class)->name('ranking.index');
+    Route::get('/tablero', DashboardController::class)->name('dashboard');
+    Route::get('/', RankingController::class)->name('ranking.index');
 
     Route::prefix('api')->name('api.')->group(function () {
         Route::get('/estadisticas', PlayerStatsController::class)->name('player-stats');

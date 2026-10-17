@@ -41,12 +41,13 @@ class AuthTest extends TestCase
         $this->admin();
 
         $this->post(route('login.store'), ['email' => 'admin@helppro.tech', 'password' => 'Banjersing'])
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('ranking.index'));
         $this->assertAuthenticated();
 
+        $this->get(route('ranking.index'))->assertOk()->assertSee('Ranking - Season')->assertSee('Salir');
         $this->get(route('dashboard'))->assertOk()->assertSee('data-bs-target="#modalPleitoMovil"', false)->assertSee('Salir');
 
-        $this->post(route('logout'))->assertRedirect(route('dashboard'));
+        $this->post(route('logout'))->assertRedirect(route('ranking.index'));
         $this->get(route('dashboard'))->assertRedirect(route('login'));
         $this->assertGuest();
     }

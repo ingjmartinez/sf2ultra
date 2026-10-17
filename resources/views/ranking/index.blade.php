@@ -27,7 +27,8 @@
                 $percentClass = $delta > 0 ? 'text-success' : ($delta < 0 ? 'text-danger' : 'text-body');
             @endphp
             <div class="card mb-3 ranking-card" role="button" tabindex="0" style="cursor: pointer;"
-                data-player-id="{{ $ranking['id'] }}" data-player-name="{{ $ranking['nombre'] }}">
+                data-player-id="{{ $ranking['id'] }}" data-player-name="{{ $ranking['nombre'] }}"
+                data-player-percent="{{ number_format($percent, 2) }}" data-player-position="{{ $ranking['ranking_porcentaje'] }}">
                 <div class="card-body d-flex align-items-center gap-3 py-3">
                     <div class="display-6 fw-bold text-primary text-center" style="min-width: 2.5rem;">{{ $ranking['ranking_porcentaje'] }}</div>
 
@@ -61,6 +62,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn btn-sm btn-soft-primary" id="tendenciaCompartir">
+                            <i class="ri-share-line align-bottom me-1"></i> Compartir
+                        </button>
+                    </div>
                     <p class="text-muted small mb-3">% de victorias acumulado de la temporada {{ $season }} al cierre de cada una de las ultimas 5 jornadas.</p>
                     <div style="position: relative; height: clamp(240px, 50vh, 360px);">
                         <canvas id="tendenciaChart"></canvas>
@@ -163,12 +169,71 @@
                 });
             }
 
+            function buildShareImage() {
+                var width = 900, height = 640;
+                var canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                var ctx = canvas.getContext('2d');
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, width, height);
+                ctx.fillStyle = '#eef2ff';
+                ctx.fillRect(0, 0, width, 150);
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#4f46e5';
+                ctx.font = '700 44px sans-serif';
+                ctx.fillText('#' + current.position + '  ' + current.name, width / 2, 70);
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '500 24px sans-serif';
+                ctx.fillText('Street Fighter 2 - Season {{ $season }}  |  ' + current.percent + '% de victorias', width / 2, 115);
+
+                var source = chart.canvas;
+                var scale = Math.min((width - 80) / source.width, (height - 210) / source.height);
+                var w = source.width * scale, h = source.height * scale;
+                ctx.drawImage(source, (width - w) / 2, 175, w, h);
+
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '400 18px sans-serif';
+                ctx.fillText('Evolucion del % de victorias - ultimas 5 jornadas', width / 2, height - 20);
+
+                return canvas;
+            }
+
+            document.getElementById('tendenciaCompartir').addEventListener('click', function () {
+                if (!chart || !current) { return; }
+
+                buildShareImage().toBlob(function (blob) {
+                    var filename = 'ranking-' + current.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+                    var file = new File([blob], filename, { type: 'image/png' });
+                    var text = current.name + ': ' + current.percent + '% de victorias - Street Fighter 2';
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({ files: [file], title: current.name, text: text }).catch(function () {});
+
+                        return;
+                    }
+
+                    var link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = filename;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                }, 'image/png');
+            });
+
             modalEl.addEventListener('shown.bs.modal', render);
             modalEl.addEventListener('hidden.bs.modal', function () { if (chart) { chart.destroy(); chart = null; } });
 
             document.querySelectorAll('.ranking-card').forEach(function (card) {
                 function open() {
-                    current = { id: card.dataset.playerId, name: card.dataset.playerName };
+                    current = {
+                        id: card.dataset.playerId,
+                        name: card.dataset.playerName,
+                        percent: card.dataset.playerPercent,
+                        position: card.dataset.playerPosition
+                    };
                     modal.show();
                 }
                 card.addEventListener('click', open);
