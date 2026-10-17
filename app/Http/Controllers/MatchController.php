@@ -15,7 +15,7 @@ class MatchController extends Controller
     public function store(SaveMatchRequest $request): RedirectResponse
     {
         $data = $request->matchData();
-        $match = $this->matches->create($data);
+        $match = $this->matches->create($data + ['user_id' => $request->user()->id]);
         $this->matches->notifyRegistered($match);
 
         return $this->backToSeason($data['fecha'])
@@ -29,6 +29,15 @@ class MatchController extends Controller
 
         return $this->backToSeason($data['fecha'])
             ->with('success', 'Match actualizado correctamente.');
+    }
+
+    public function destroy(GameMatch $match): RedirectResponse
+    {
+        $season = $match->fecha->year;
+        $this->matches->delete($match);
+
+        return $this->backToSeason("{$season}-01-01")
+            ->with('success', 'Match eliminado y estadisticas actualizadas.');
     }
 
     private function backToSeason(string $fecha): RedirectResponse

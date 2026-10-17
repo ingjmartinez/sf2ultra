@@ -21,6 +21,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Imagen</th>
                             <th>Nombre</th>
                             <th>Correo</th>
                             <th class="text-end">Victorias</th>
@@ -33,6 +34,13 @@
                         @forelse ($players as $player)
                             <tr>
                                 <td>{{ $player->id }}</td>
+                                <td>
+                                    @if ($player->image)
+                                        <img src="{{ $player->image->url }}" alt="{{ $player->image->nombre }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;" loading="lazy">
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </td>
                                 <td>{{ $player->nombre }}</td>
                                 <td>{{ $player->email ?? '—' }}</td>
                                 <td class="text-end">{{ $player->victorias }}</td>
@@ -42,14 +50,15 @@
                                     <button type="button" class="btn btn-sm btn-soft-primary btn-editar-player"
                                         data-action="{{ route('players.update', $player) }}"
                                         data-nombre="{{ $player->nombre }}"
-                                        data-email="{{ $player->email }}">
+                                        data-email="{{ $player->email }}"
+                                        data-image-id="{{ $player->image_id }}">
                                         Editar
                                     </button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">No hay players registrados.</td>
+                                <td colspan="8" class="text-center text-muted">No hay players registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -66,6 +75,10 @@
                 document.getElementById('editPlayerForm').action = button.dataset.action;
                 document.getElementById('editPlayerNombre').value = button.dataset.nombre;
                 document.getElementById('editPlayerEmail').value = button.dataset.email || '';
+                var selectedImage = button.dataset.imageId || '';
+                document.querySelectorAll('#editPlayerForm input[name=image_id]').forEach(function (radio) {
+                    radio.checked = radio.value === selectedImage;
+                });
                 bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarPlayer')).show();
             });
         });

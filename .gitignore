@@ -32,3 +32,4 @@ Thumbs.db
 /.claude/settings.local.json
 .env.local.bak
 /database/*.sql
+/public/uploads

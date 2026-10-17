@@ -10,7 +10,6 @@
                 @method('PUT')
                 <input type="hidden" name="season" value="{{ $season }}">
                 <div class="modal-body">
-                    <input type="hidden" name="fecha" id="editFechaMatch">
                     <input type="hidden" name="ganador_id" id="editGanadorMatch">
                     <input type="hidden" name="perdedor_id" id="editPerdedorMatch">
 
@@ -20,6 +19,11 @@
                             <div id="editMatchPlayers">Ganador vs Perdedor</div>
                         </div>
                         <div class="text-muted small" id="editMatchDate"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="editFechaMatch">Fecha y hora</label>
+                        <input class="form-control form-control-lg" id="editFechaMatch" type="datetime-local" name="fecha" required>
                     </div>
 
                     <div class="row g-3 mt-1">

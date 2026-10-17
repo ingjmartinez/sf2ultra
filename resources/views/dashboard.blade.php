@@ -10,6 +10,7 @@
     @include('partials.modals.versus')
     @include('partials.modals.quick-match')
     @include('partials.modals.edit-match')
+    @include('partials.modals.hour-warning')
     @include('partials.modals.player')
     @include('partials.modals.player-stats')
     @include('partials.modals.ranking')
@@ -79,13 +80,8 @@
         </div>
     </form>
 
-    <div class="matches-toolbar">
-        <div class="text-muted small" id="matchesPaginationInfo"></div>
-        <div class="text-muted small">10 registros por pagina</div>
-    </div>
-
     <div class="table-responsive">
-        <table class="table table-sm table-striped align-middle" id="matchesTable">
+        <table class="table table-sm table-striped align-middle w-100" id="matchesTable">
             <thead>
                 <tr>
                     <th>Fecha</th>
@@ -93,17 +89,19 @@
                     <th>Perdedor</th>
                     <th>Puntos Victorias</th>
                     <th>Puntos Derrotas</th>
+                    <th>Registrado por</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($matches as $match)
                     <tr class="match-row">
-                        <td>{{ $match->fecha->format('Y-m-d H:i:s') }}</td>
+                        <td data-order="{{ $match->id }}">{{ $match->fecha->format('Y-m-d H:i:s') }}</td>
                         <td>{{ $match->ganador->nombre }}</td>
                         <td>{{ $match->perdedor->nombre }}</td>
                         <td>{{ $match->victorias_ganador }}</td>
                         <td>{{ $match->victorias_perdedor }}</td>
+                        <td>{{ $match->registradoPor?->name ?? '—' }}</td>
                         <td>
                             
                             <button
@@ -120,21 +118,51 @@
                                 data-victorias-ganador="{{ $match->victorias_ganador }}"
                                 data-victorias-perdedor="{{ $match->victorias_perdedor }}"
                             >Editar</button>
-                            
+                            <form method="post" action="{{ route('matches.destroy', $match) }}" class="d-inline"
+                                onsubmit="return confirm('¿Eliminar este match? Se restaran sus victorias, derrotas y puntos.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <div class="matches-pagination" id="matchesPagination"></div>
 @endsection
 
+@push('styles')
+    <link href="{{ asset('velzon/libs/datatables/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+@endpush
+
 @push('scripts')
+    <script src="{{ asset('velzon/libs/datatables/jquery.min.js') }}"></script>
+    <script src="{{ asset('velzon/libs/datatables/dataTables.min.js') }}"></script>
+    <script src="{{ asset('velzon/libs/datatables/dataTables.bootstrap5.min.js') }}"></script>
+    <script>
+        new DataTable('#matchesTable', {
+            order: [[0, 'desc']],
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+            columnDefs: [{ orderable: false, searchable: false, targets: -1 }],
+            language: {
+                search: 'Buscar:',
+                lengthMenu: 'Mostrar _MENU_ registros',
+                info: 'Mostrando _START_-_END_ de _TOTAL_ matches',
+                infoEmpty: 'Sin matches registrados',
+                infoFiltered: '(filtrado de _MAX_)',
+                zeroRecords: 'No se encontraron matches',
+                emptyTable: 'Sin matches registrados',
+                paginate: { first: '«', previous: '‹', next: '›', last: '»' }
+            }
+        });
+    </script>
     <script>
         window.SF2 = {{ Illuminate\Support\Js::from([
             'season' => $season,
             'openDailyReport' => $openDailyReport,
+            'matchCutoffHour' => config('sf2.match_cutoff_hour'),
             'routes' => [
                 'playerStats' => route('api.player-stats'),
                 'versus' => route('api.versus'),
@@ -142,4 +170,14 @@
         ]) }};
     </script>
     <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script>
+        (function () {
+            var id = new URLSearchParams(window.location.search).get('abrir');
+            var modal = id && /^modal\w+$/.test(id) ? document.getElementById(id) : null;
+
+            if (modal) {
+                bootstrap.Modal.getOrCreateInstance(modal).show();
+            }
+        })();
+    </script>
 @endpush

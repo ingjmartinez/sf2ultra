@@ -55,6 +55,16 @@ class MatchService
         });
     }
 
+    public function delete(GameMatch $match): void
+    {
+        DB::transaction(function () use ($match) {
+            $match = GameMatch::whereKey($match->getKey())->lockForUpdate()->firstOrFail();
+
+            $this->revertStats($match);
+            $match->delete();
+        });
+    }
+
     public function recalculateAllPlayerTotals(): void
     {
         Player::query()->update(['victorias' => 0, 'derrotas' => 0, 'puntos' => 0]);

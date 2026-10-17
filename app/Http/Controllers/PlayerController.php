@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlayerRequest;
 use App\Http\Requests\UpdatePlayerRequest;
+use App\Models\Image;
 use App\Models\Player;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -13,7 +14,8 @@ class PlayerController extends Controller
     public function index(): View
     {
         return view('players.index', [
-            'players' => Player::query()->orderBy('nombre')->get(),
+            'players' => Player::query()->with('image')->orderBy('nombre')->get(),
+            'images' => Image::query()->orderBy('nombre')->get(),
         ]);
     }
 

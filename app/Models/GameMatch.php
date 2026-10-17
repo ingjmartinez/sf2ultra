@@ -21,6 +21,7 @@ class GameMatch extends Model
         'perdedor_id',
         'victorias_ganador',
         'victorias_perdedor',
+        'user_id',
     ];
 
     protected function casts(): array
@@ -40,6 +41,11 @@ class GameMatch extends Model
     public function perdedor(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'perdedor_id');
+    }
+
+    public function registradoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function scopeInSeason(Builder $query, int|string $season): Builder

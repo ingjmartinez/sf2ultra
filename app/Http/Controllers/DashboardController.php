@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $daily = $this->stats->dailyReport($reportDate);
 
         $matches = GameMatch::query()
-            ->with(['ganador:id,nombre', 'perdedor:id,nombre'])
+            ->with(['ganador:id,nombre', 'perdedor:id,nombre', 'registradoPor:id,name'])
             ->inSeason($season)
             ->when($filterDate, fn ($q) => $q->onDate($filterDate))
             ->when($filterPlayer > 0, fn ($q) => $q->where(
@@ -36,7 +36,6 @@ class DashboardController extends Controller
             ))
             ->whereNotNull('ganador_id')
             ->whereNotNull('perdedor_id')
-            ->orderByDesc('fecha')
             ->orderByDesc('id')
             ->get();
 

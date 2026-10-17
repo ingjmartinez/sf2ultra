@@ -1,6 +1,7 @@
 const {
     season: selectedSeason,
     openDailyReport: shouldOpenDailyReport,
+    matchCutoffHour: matchCutoffHour,
     routes: sf2Routes
 } = window.SF2;
 
@@ -106,6 +107,39 @@ function resetQuickScores() {
     quickMatchScores[1] = 0;
     quickMatchScores[2] = 0;
 }
+
+function isEarlyMorningDate(value) {
+    const hour = value ? parseInt(value.slice(11, 13), 10) : NaN;
+
+    return !Number.isNaN(hour) && hour < matchCutoffHour;
+}
+
+const hourWarningModal = new bootstrap.Modal(document.getElementById("modalAvisoHora"));
+const hourWarningValue = document.getElementById("avisoHoraValor");
+let hourWarningCallback = null;
+
+// Si la hora es de madrugada avisa para validarla; si no, continua directo.
+function confirmEarlyMorning(value, onContinue) {
+    if (!isEarlyMorningDate(value)) {
+        onContinue();
+
+        return;
+    }
+
+    hourWarningValue.textContent = value.replace("T", " ");
+    hourWarningCallback = onContinue;
+    hourWarningModal.show();
+}
+
+document.getElementById("avisoHoraContinuar").addEventListener("click", () => {
+    const callback = hourWarningCallback;
+    hourWarningCallback = null;
+    hourWarningModal.hide();
+
+    if (callback) {
+        callback();
+    }
+});
 
 function validateQuickSetup() {
     const target = getQuickTarget();
@@ -638,7 +672,7 @@ quickStartButton.addEventListener("click", () => {
         return;
     }
 
-    showQuickCounter();
+    confirmEarlyMorning(document.getElementById("fechaPleito").value, showQuickCounter);
 });
 
 quickEditButton.addEventListener("click", showQuickSetup);
@@ -714,10 +748,13 @@ function updateEditLoserMax() {
     }
 }
 
-document.querySelectorAll(".edit-match-button").forEach(button => {
-    button.addEventListener("click", () => {
+document.getElementById("matchesTable").addEventListener("click", event => {
+    const button = event.target.closest(".edit-match-button");
+
+    if (button) {
         editMatchForm.action = button.dataset.updateUrl;
         editFechaMatch.value = normalizeDateTimeLocal(button.dataset.fecha);
+        editFechaMatch.dataset.original = editFechaMatch.value;
         editGanadorMatch.value = button.dataset.ganadorId;
         editPerdedorMatch.value = button.dataset.perdedorId;
         editVictoriasGanador.value = button.dataset.victoriasGanador;
@@ -725,51 +762,25 @@ document.querySelectorAll(".edit-match-button").forEach(button => {
         editMatchPlayers.textContent = `${button.dataset.ganador} vs ${button.dataset.perdedor}`;
         editMatchDate.textContent = button.dataset.fecha;
         updateEditLoserMax();
-    });
+    }
 });
 
 editVictoriasGanador.addEventListener("change", updateEditLoserMax);
 
-const matchesRows = Array.from(document.querySelectorAll("#matchesTable tbody .match-row"));
-const matchesPagination = document.getElementById("matchesPagination");
-const matchesPaginationInfo = document.getElementById("matchesPaginationInfo");
-const matchesPerPage = 10;
-let currentMatchesPage = 1;
-
-function renderMatchesPage(page) {
-    const totalPages = Math.max(1, Math.ceil(matchesRows.length / matchesPerPage));
-    currentMatchesPage = Math.min(Math.max(page, 1), totalPages);
-    const start = (currentMatchesPage - 1) * matchesPerPage;
-    const end = start + matchesPerPage;
-
-    matchesRows.forEach((row, index) => {
-        row.classList.toggle("d-none", index < start || index >= end);
-    });
-
-    if (matchesRows.length === 0) {
-        matchesPaginationInfo.textContent = "Sin matches registrados";
-        matchesPagination.innerHTML = "";
+editMatchForm.addEventListener("submit", event => {
+    if (editMatchForm.dataset.confirmed === "1") {
         return;
     }
 
-    matchesPaginationInfo.textContent = `Mostrando ${start + 1}-${Math.min(end, matchesRows.length)} de ${matchesRows.length} matches`;
-    matchesPagination.innerHTML = "";
-
-    if (totalPages <= 1) {
-        return;
+    if (editFechaMatch.value !== editFechaMatch.dataset.original && isEarlyMorningDate(editFechaMatch.value)) {
+        event.preventDefault();
+        confirmEarlyMorning(editFechaMatch.value, () => {
+            editMatchForm.dataset.confirmed = "1";
+            editMatchForm.submit();
+        });
     }
+});
 
-    for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `btn btn-sm ${pageNumber === currentMatchesPage ? "btn-primary" : "btn-outline-primary"}`;
-        button.textContent = pageNumber;
-        button.addEventListener("click", () => renderMatchesPage(pageNumber));
-        matchesPagination.appendChild(button);
-    }
-}
-
-renderMatchesPage(1);
 
 if (shouldOpenDailyReport) {
     const dailyReportModal = new bootstrap.Modal(document.getElementById("modalReporteDia"));

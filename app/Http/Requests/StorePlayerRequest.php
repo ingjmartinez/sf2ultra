@@ -22,6 +22,7 @@ class StorePlayerRequest extends FormRequest
         return [
             'nombre' => ['required', 'string', 'max:100', 'unique:players,nombre'],
             'email' => ['nullable', 'email', 'max:255'],
+            'image_id' => ['nullable', 'integer', 'exists:images,id'],
         ];
     }
 

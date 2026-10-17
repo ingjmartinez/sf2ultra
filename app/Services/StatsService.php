@@ -58,6 +58,40 @@ class StatsService
         ];
     }
 
+    /**
+     * Evolucion del % de victorias acumulado de la temporada al cierre de cada
+     * jornada (dia con matches) del jugador; solo las ultimas $days jornadas.
+     *
+     * @return array<int, list<array{fecha: string, porcentaje: float, total: int}>> keyed by player id
+     */
+    public function winPercentTrends(string $season, int $days = 5): array
+    {
+        $trends = [];
+
+        $this->resultsForSeason($season)
+            ->reverse()
+            ->groupBy(fn (PlayerResult $r) => $r->player->id)
+            ->each(function (Collection $rows, int $playerId) use (&$trends, $days) {
+                $wins = 0;
+                $total = 0;
+                $byDay = [];
+
+                foreach ($rows as $row) {
+                    $total++;
+                    $wins += $row->won ? 1 : 0;
+                    $byDay[$row->match->fecha->format('Y-m-d')] = [
+                        'fecha' => $row->match->fecha->format('Y-m-d'),
+                        'porcentaje' => round($wins * 100 / $total, 2),
+                        'total' => $total,
+                    ];
+                }
+
+                $trends[$playerId] = array_slice(array_values($byDay), -$days);
+            });
+
+        return $trends;
+    }
+
     /** @return array<string, mixed> */
     public function playerVersusSeason(int $playerId, string $season): array
     {
@@ -178,7 +212,6 @@ class StatsService
             ->with(['ganador:id,nombre', 'perdedor:id,nombre'])
             ->whereNotNull('ganador_id')
             ->whereNotNull('perdedor_id')
-            ->orderByDesc('fecha')
             ->orderByDesc('id');
     }
 

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\GameMatch;
 use App\Models\Player;
 use App\Models\User;
+use App\Services\StatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -37,6 +38,69 @@ class StatsTest extends TestCase
             'fecha' => $fecha, 'ganador_id' => $w->id, 'perdedor_id' => $l->id,
             'victorias_ganador' => $vg, 'victorias_perdedor' => $vp,
         ]);
+    }
+
+    public function test_ranking_page_lists_season_ranking(): void
+    {
+        $this->get(route('ranking.index', ['season' => 2025]))
+            ->assertOk()
+            ->assertSee('Ranking - Season 2025')
+            ->assertSeeInOrder(['Yulaw', '66.67%', 'Pan', '33.33%']);
+    }
+
+    public function test_win_percent_trends_follow_the_last_matchdays(): void
+    {
+        $stats = app(StatsService::class);
+        $trend = $stats->winPercentTrends('2025')[$this->yulaw->id];
+
+        // 3 matches el mismo dia: gana, gana, pierde -> 66.67% al cierre de la jornada
+        $this->assertSame([['fecha' => '2025-06-01', 'porcentaje' => 66.67, 'total' => 3]], $trend);
+
+        // el ultimo punto coincide con el % del ranking
+        $this->assertEquals(
+            end($trend)['porcentaje'],
+            $stats->seasonStats('2025')->firstWhere('id', $this->yulaw->id)['porcentaje_victoria']
+        );
+    }
+
+    public function test_win_percent_trends_keep_only_five_matchdays(): void
+    {
+        foreach (range(2, 8) as $day) {
+            $this->match("2025-07-0{$day} 10:00:00", $this->pan, $this->yulaw, 3, 1);
+        }
+
+        $trend = app(StatsService::class)->winPercentTrends('2025')[$this->pan->id];
+
+        $this->assertCount(5, $trend);
+        $this->assertSame('2025-07-08', end($trend)['fecha']);
+    }
+
+    public function test_ranking_percent_is_colored_by_change_against_previous_matchday(): void
+    {
+        // Yulaw baja (66.67% -> 50%) y Pan sube (33.33% -> 50%)
+        $this->match('2025-06-02 10:00:00', $this->pan, $this->yulaw, 3, 1);
+
+        $html = $this->get(route('ranking.index', ['season' => 2025]))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/text-danger">50\.00%/', $html);
+        $this->assertMatchesRegularExpression('/text-success">50\.00%/', $html);
+    }
+
+    public function test_sidebar_modal_links_lead_to_the_dashboard_from_other_modules(): void
+    {
+        $this->get(route('ranking.index'))
+            ->assertOk()
+            ->assertSee(route('dashboard', ['abrir' => 'modalVSDia']), false)
+            ->assertDontSee('data-bs-target="#modalVSDia"', false);
+
+        $this->get(route('dashboard'))->assertSee('data-bs-target="#modalVSDia"', false);
+    }
+
+    public function test_ranking_page_requires_authentication(): void
+    {
+        auth()->logout();
+
+        $this->get(route('ranking.index'))->assertRedirect(route('login'));
     }
 
     public function test_dashboard_renders_season_ranking_and_matches(): void

@@ -26,6 +26,7 @@ class UpdatePlayerRequest extends FormRequest
         return [
             'nombre' => ['required', 'string', 'max:100', Rule::unique('players', 'nombre')->ignore($this->route('player'))],
             'email' => ['nullable', 'email', 'max:255'],
+            'image_id' => ['nullable', 'integer', 'exists:images,id'],
         ];
     }
 
