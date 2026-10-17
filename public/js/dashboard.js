@@ -48,6 +48,12 @@ const dailyReportPrintButton = document.getElementById("dailyReportPrintButton")
 const quickSaveButton = document.getElementById("quickSaveButton");
 const quickGanadorId = document.getElementById("quickGanadorId");
 const quickPerdedorId = document.getElementById("quickPerdedorId");
+const quickGanadorImageId = document.getElementById("quickGanadorImageId");
+const quickPerdedorImageId = document.getElementById("quickPerdedorImageId");
+
+function getQuickImage(slot) {
+    return document.querySelector(`input[name='quick_imagen_${slot}']:checked`)?.value || "";
+}
 const quickVictoriasGanador = document.getElementById("quickVictoriasGanador");
 const quickVictoriasPerdedor = document.getElementById("quickVictoriasPerdedor");
 const quickMatchScores = {
@@ -85,6 +91,8 @@ function setQuickSetupMessage(message, type) {
 function clearQuickHiddenFields() {
     quickGanadorId.value = "";
     quickPerdedorId.value = "";
+    quickGanadorImageId.value = "";
+    quickPerdedorImageId.value = "";
     quickVictoriasGanador.value = "";
     quickVictoriasPerdedor.value = "";
 }
@@ -616,12 +624,16 @@ function updateQuickMatch() {
     if (winner === 1) {
         quickGanadorId.value = quickPlayer1.value;
         quickPerdedorId.value = quickPlayer2.value;
+        quickGanadorImageId.value = getQuickImage(1);
+        quickPerdedorImageId.value = getQuickImage(2);
         quickVictoriasGanador.value = quickMatchScores[1];
         quickVictoriasPerdedor.value = quickMatchScores[2];
         setQuickMessage(`${player1Name} gana ${quickMatchScores[1]} - ${quickMatchScores[2]}.`, "success");
     } else {
         quickGanadorId.value = quickPlayer2.value;
         quickPerdedorId.value = quickPlayer1.value;
+        quickGanadorImageId.value = getQuickImage(2);
+        quickPerdedorImageId.value = getQuickImage(1);
         quickVictoriasGanador.value = quickMatchScores[2];
         quickVictoriasPerdedor.value = quickMatchScores[1];
         setQuickMessage(`${player2Name} gana ${quickMatchScores[2]} - ${quickMatchScores[1]}.`, "success");
@@ -665,6 +677,10 @@ quickPlayer1.addEventListener("change", () => {
 quickPlayer2.addEventListener("change", () => {
     validateQuickSetup();
     updateQuickMatch();
+});
+
+document.querySelectorAll("[data-quick-image-picker]").forEach(picker => {
+    picker.addEventListener("change", updateQuickMatch);
 });
 
 quickStartButton.addEventListener("click", () => {

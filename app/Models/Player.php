@@ -13,7 +13,12 @@ class Player extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['nombre', 'email', 'image_id'];
+    protected $fillable = ['nombre', 'email', 'image_id', 'user_id'];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function image(): BelongsTo
     {

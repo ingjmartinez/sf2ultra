@@ -36,6 +36,7 @@
                                             <option value="{{ $player->id }}" data-ranking="{{ $rankingByPlayerId[$player->id] ?? '-' }}">{{ $player->nombre }}</option>
                                         @endforeach
                                     </select>
+                                    @include('partials.modals.quick-image-picker', ['slot' => $slot])
                                 </div>
                             @endforeach
                         </div>
@@ -49,6 +50,8 @@
 
                     <input type="hidden" name="ganador_id" id="quickGanadorId">
                     <input type="hidden" name="perdedor_id" id="quickPerdedorId">
+                    <input type="hidden" name="ganador_image_id" id="quickGanadorImageId">
+                    <input type="hidden" name="perdedor_image_id" id="quickPerdedorImageId">
                     <input type="hidden" name="victorias_ganador" id="quickVictoriasGanador">
                     <input type="hidden" name="victorias_perdedor" id="quickVictoriasPerdedor">
 

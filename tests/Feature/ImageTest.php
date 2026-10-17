@@ -80,6 +80,29 @@ class ImageTest extends TestCase
             ->assertSessionHasErrors('image_id');
     }
 
+    public function test_a_match_can_record_the_character_each_player_used(): void
+    {
+        [$winner, $loser] = Player::factory()->count(2)->create();
+        [$ryu, $ken] = Image::factory()->count(2)->create();
+        $payload = [
+            'fecha' => '2026-05-10T20:30', 'ganador_id' => $winner->id, 'perdedor_id' => $loser->id,
+            'victorias_ganador' => 5, 'victorias_perdedor' => 2,
+        ];
+
+        $this->post(route('matches.store'), $payload + ['ganador_image_id' => $ryu->id, 'perdedor_image_id' => $ken->id])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('matches', ['ganador_id' => $winner->id, 'ganador_image_id' => $ryu->id, 'perdedor_image_id' => $ken->id]);
+        $this->get(route('dashboard', ['season' => 2026]))->assertSee($ryu->url, false)->assertSee($ken->url, false);
+
+        // es opcional
+        $this->post(route('matches.store'), $payload + ['ganador_image_id' => '', 'perdedor_image_id' => ''])
+            ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('matches', ['ganador_image_id' => null, 'perdedor_image_id' => null]);
+
+        $this->post(route('matches.store'), $payload + ['ganador_image_id' => 9999])->assertSessionHasErrors('ganador_image_id');
+    }
+
     public function test_players_page_shows_the_image_picker(): void
     {
         $image = Image::factory()->create(['nombre' => 'Guile']);

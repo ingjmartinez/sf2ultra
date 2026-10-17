@@ -20,7 +20,7 @@ class AdminUserSeeder extends Seeder
 
         User::updateOrCreate(
             ['email' => $email],
-            ['name' => 'Administrador', 'password' => $password],
+            ['name' => 'Administrador', 'password' => $password, 'is_admin' => true],
         );
     }
 }

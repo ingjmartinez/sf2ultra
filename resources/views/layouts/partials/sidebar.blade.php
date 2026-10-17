@@ -40,6 +40,7 @@
                         <i class="ri-dashboard-2-line"></i> <span>Tablero</span>
                     </a>
                 </li>
+                @if (auth()->user()->is_admin)
                 <li class="nav-item">
                     <a class="nav-link menu-link @if (request()->routeIs('players.*')) active @endif" href="{{ route('players.index') }}">
                         <i class="ri-team-line"></i> <span>Players</span>
@@ -50,6 +51,7 @@
                         <i class="ri-image-line"></i> <span>Imagenes</span>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link menu-link" {!! $modalLink('modalTemporada') !!}>
                         <i class="ri-calendar-event-line"></i> <span>Temporada {{ $season ?? now()->year }}</span>
@@ -62,11 +64,13 @@
                         <i class="ri-sword-line"></i> <span>Registrar Pleito</span>
                     </a>
                 </li>
+                @if (auth()->user()->is_admin)
                 <li class="nav-item">
                     <a class="nav-link menu-link" {!! $modalLink('modalPlayer') !!}>
                         <i class="ri-user-add-line"></i> <span>Registrar Player</span>
                     </a>
                 </li>
+                @endif
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>Consultas</span></li>
                 <li class="nav-item">

@@ -22,6 +22,8 @@ class GameMatch extends Model
         'victorias_ganador',
         'victorias_perdedor',
         'user_id',
+        'ganador_image_id',
+        'perdedor_image_id',
     ];
 
     protected function casts(): array
@@ -41,6 +43,16 @@ class GameMatch extends Model
     public function perdedor(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'perdedor_id');
+    }
+
+    public function ganadorImage(): BelongsTo
+    {
+        return $this->belongsTo(Image::class, 'ganador_image_id');
+    }
+
+    public function perdedorImage(): BelongsTo
+    {
+        return $this->belongsTo(Image::class, 'perdedor_image_id');
     }
 
     public function registradoPor(): BelongsTo

@@ -27,14 +27,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::post('/matches', [MatchController::class, 'store'])->name('matches.store');
-    Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
-    Route::delete('/matches/{match}', [MatchController::class, 'destroy'])->name('matches.destroy');
 
-    Route::get('/players', [PlayerController::class, 'index'])->name('players.index');
-    Route::post('/players', [PlayerController::class, 'store'])->name('players.store');
-    Route::put('/players/{player}', [PlayerController::class, 'update'])->name('players.update');
+    Route::middleware('admin')->group(function () {
+        Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
+        Route::delete('/matches/{match}', [MatchController::class, 'destroy'])->name('matches.destroy');
 
-    Route::get('/imagenes', [ImageController::class, 'index'])->name('imagenes.index');
-    Route::post('/imagenes', [ImageController::class, 'store'])->name('imagenes.store');
-    Route::delete('/imagenes/{image}', [ImageController::class, 'destroy'])->name('imagenes.destroy');
+        Route::get('/players', [PlayerController::class, 'index'])->name('players.index');
+        Route::post('/players', [PlayerController::class, 'store'])->name('players.store');
+        Route::put('/players/{player}', [PlayerController::class, 'update'])->name('players.update');
+
+        Route::get('/imagenes', [ImageController::class, 'index'])->name('imagenes.index');
+        Route::post('/imagenes', [ImageController::class, 'store'])->name('imagenes.store');
+        Route::delete('/imagenes/{image}', [ImageController::class, 'destroy'])->name('imagenes.destroy');
+    });
 });

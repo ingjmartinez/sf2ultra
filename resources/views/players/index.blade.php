@@ -42,7 +42,12 @@
                                     @endif
                                 </td>
                                 <td>{{ $player->nombre }}</td>
-                                <td>{{ $player->email ?? '—' }}</td>
+                                <td>
+                                    {{ $player->email ?? '—' }}
+                                    @if ($player->user_id)
+                                        <span class="badge bg-success-subtle text-success ms-1">Con acceso</span>
+                                    @endif
+                                </td>
                                 <td class="text-end">{{ $player->victorias }}</td>
                                 <td class="text-end">{{ $player->derrotas }}</td>
                                 <td class="text-end">{{ $player->puntos }}</td>
@@ -51,7 +56,8 @@
                                         data-action="{{ route('players.update', $player) }}"
                                         data-nombre="{{ $player->nombre }}"
                                         data-email="{{ $player->email }}"
-                                        data-image-id="{{ $player->image_id }}">
+                                        data-image-id="{{ $player->image_id }}"
+                                        data-has-access="{{ $player->user_id ? 1 : 0 }}">
                                         Editar
                                     </button>
                                 </td>
@@ -75,6 +81,8 @@
                 document.getElementById('editPlayerForm').action = button.dataset.action;
                 document.getElementById('editPlayerNombre').value = button.dataset.nombre;
                 document.getElementById('editPlayerEmail').value = button.dataset.email || '';
+                document.getElementById('editPlayerPassword').value = '';
+                document.getElementById('editPlayerAccess').classList.toggle('d-none', button.dataset.hasAccess !== '1');
                 var selectedImage = button.dataset.imageId || '';
                 document.querySelectorAll('#editPlayerForm input[name=image_id]').forEach(function (radio) {
                     radio.checked = radio.value === selectedImage;

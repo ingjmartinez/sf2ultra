@@ -15,6 +15,10 @@
                     <label class="form-label mt-3" for="editPlayerEmail">Correo (opcional)</label>
                     <input class="form-control" id="editPlayerEmail" type="email" name="email" maxlength="255">
                     <div class="form-text">Recibirá un aviso cuando se registre un match suyo.</div>
+                    <label class="form-label mt-3" for="editPlayerPassword">Contrasena de acceso (opcional)</label>
+                    <input class="form-control" id="editPlayerPassword" type="password" name="password" minlength="8" maxlength="72" autocomplete="new-password">
+                    <div class="form-text">Dejalo vacio para no cambiarla. Minimo 8 caracteres.</div>
+                    <div class="form-text text-success d-none" id="editPlayerAccess"><i class="ri-key-2-line"></i> Este jugador ya tiene acceso a la plataforma.</div>
 
                     <label class="form-label mt-3">Imagen</label>
                     <div class="d-flex flex-wrap gap-2 player-image-picker">

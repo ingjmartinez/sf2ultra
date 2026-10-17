@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameMatch;
+use App\Models\Image;
 use App\Models\Player;
 use App\Services\StatsService;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class DashboardController extends Controller
         $daily = $this->stats->dailyReport($reportDate);
 
         $matches = GameMatch::query()
-            ->with(['ganador:id,nombre', 'perdedor:id,nombre', 'registradoPor:id,name'])
+            ->with(['ganador:id,nombre', 'perdedor:id,nombre', 'registradoPor:id,name', 'ganadorImage', 'perdedorImage'])
             ->inSeason($season)
             ->when($filterDate, fn ($q) => $q->onDate($filterDate))
             ->when($filterPlayer > 0, fn ($q) => $q->where(
@@ -43,6 +44,7 @@ class DashboardController extends Controller
             'season' => $season,
             'availableSeasons' => $this->stats->availableSeasons($currentYear, $season),
             'players' => Player::orderBy('nombre')->get(['id', 'nombre']),
+            'images' => Image::orderBy('nombre')->get(),
             'rankings' => $ranking,
             'rankingByPlayerId' => $ranking->pluck('ranking', 'id'),
             'seasonStats' => $this->stats->seasonStats($season),

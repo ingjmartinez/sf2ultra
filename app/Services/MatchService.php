@@ -28,7 +28,7 @@ class MatchService
         $match->loadMissing(['ganador', 'perdedor']);
 
         $recipients = collect([$match->ganador?->email, $match->perdedor?->email])
-            ->merge(User::pluck('email'))
+            ->merge(User::where('is_admin', true)->pluck('email'))
             ->filter()
             ->map(fn (string $email) => strtolower($email))
             ->unique();

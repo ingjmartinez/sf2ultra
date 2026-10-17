@@ -90,20 +90,32 @@
                     <th>Puntos Victorias</th>
                     <th>Puntos Derrotas</th>
                     <th>Registrado por</th>
-                    <th>Acciones</th>
+                    @if (auth()->user()->is_admin)
+                        <th class="no-sort">Acciones</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach ($matches as $match)
                     <tr class="match-row">
                         <td data-order="{{ $match->id }}">{{ $match->fecha->format('Y-m-d H:i:s') }}</td>
-                        <td>{{ $match->ganador->nombre }}</td>
-                        <td>{{ $match->perdedor->nombre }}</td>
+                        <td>
+                            @if ($match->ganadorImage)
+                                <img src="{{ $match->ganadorImage->url }}" alt="{{ $match->ganadorImage->nombre }}" title="{{ $match->ganadorImage->nombre }}" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;" loading="lazy">
+                            @endif
+                            {{ $match->ganador->nombre }}
+                        </td>
+                        <td>
+                            @if ($match->perdedorImage)
+                                <img src="{{ $match->perdedorImage->url }}" alt="{{ $match->perdedorImage->nombre }}" title="{{ $match->perdedorImage->nombre }}" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;" loading="lazy">
+                            @endif
+                            {{ $match->perdedor->nombre }}
+                        </td>
                         <td>{{ $match->victorias_ganador }}</td>
                         <td>{{ $match->victorias_perdedor }}</td>
                         <td>{{ $match->registradoPor?->name ?? '—' }}</td>
+                        @if (auth()->user()->is_admin)
                         <td>
-                            
                             <button
                                 type="button"
                                 class="btn btn-sm btn-outline-primary edit-match-button"
@@ -125,6 +137,7 @@
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                             </form>
                         </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
@@ -145,7 +158,7 @@
             order: [[0, 'desc']],
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100],
-            columnDefs: [{ orderable: false, searchable: false, targets: -1 }],
+            columnDefs: [{ orderable: false, searchable: false, targets: 'no-sort' }],
             language: {
                 search: 'Buscar:',
                 lengthMenu: 'Mostrar _MENU_ registros',

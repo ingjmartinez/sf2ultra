@@ -23,9 +23,16 @@ class UpdatePlayerRequest extends FormRequest
     /** @return array<string, list<mixed>> */
     public function rules(): array
     {
+        $player = $this->route('player');
+
         return [
             'nombre' => ['required', 'string', 'max:100', Rule::unique('players', 'nombre')->ignore($this->route('player'))],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => [
+                'nullable', 'email', 'max:255', 'required_with:password',
+                Rule::requiredIf(fn () => (bool) $player?->user_id),
+                Rule::when($this->filled('password') || $player?->user_id, [Rule::unique('users', 'email')->ignore($player?->user_id)]),
+            ],
+            'password' => ['nullable', 'string', 'min:8', 'max:72'],
             'image_id' => ['nullable', 'integer', 'exists:images,id'],
         ];
     }
@@ -38,6 +45,11 @@ class UpdatePlayerRequest extends FormRequest
             'nombre.max' => 'El nombre no puede superar los 100 caracteres.',
             'nombre.unique' => 'Ya existe un jugador con ese nombre.',
             'email.email' => 'El correo no es valido.',
+            'email.required' => 'El jugador tiene acceso: el correo es obligatorio.',
+            'email.required_with' => 'Para crear una contrasena el jugador necesita un correo.',
+            'email.unique' => 'Ese correo ya tiene una cuenta.',
+            'password.min' => 'La contrasena debe tener al menos 8 caracteres.',
+            'password.max' => 'La contrasena no puede superar los 72 caracteres.',
         ];
     }
 }

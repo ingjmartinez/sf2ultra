@@ -21,6 +21,8 @@ class SaveMatchRequest extends FormRequest
             'victorias_ganador' => ['required', 'integer', 'in:3,5'],
             'victorias_perdedor' => ['required', 'integer', 'min:0', 'lt:victorias_ganador'],
             'season' => ['nullable', 'digits:4'],
+            'ganador_image_id' => ['nullable', 'integer', 'exists:images,id'],
+            'perdedor_image_id' => ['nullable', 'integer', 'exists:images,id'],
         ];
     }
 
@@ -51,6 +53,8 @@ class SaveMatchRequest extends FormRequest
             'perdedor_id',
             'victorias_ganador',
             'victorias_perdedor',
+            'ganador_image_id',
+            'perdedor_image_id',
         ]);
     }
 }
