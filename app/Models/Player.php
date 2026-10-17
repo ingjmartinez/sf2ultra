@@ -12,7 +12,7 @@ class Player extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'email'];
 
     public function victoriasComoGanador(): HasMany
     {

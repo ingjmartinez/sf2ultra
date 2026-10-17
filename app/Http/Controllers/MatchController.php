@@ -15,7 +15,8 @@ class MatchController extends Controller
     public function store(SaveMatchRequest $request): RedirectResponse
     {
         $data = $request->matchData();
-        $this->matches->create($data);
+        $match = $this->matches->create($data);
+        $this->matches->notifyRegistered($match);
 
         return $this->backToSeason($data['fecha'])
             ->with('success', 'Match registrado y estadisticas actualizadas.');

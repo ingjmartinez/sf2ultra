@@ -21,6 +21,7 @@ class StorePlayerRequest extends FormRequest
     {
         return [
             'nombre' => ['required', 'string', 'max:100', 'unique:players,nombre'],
+            'email' => ['nullable', 'email', 'max:255'],
         ];
     }
 
@@ -31,6 +32,7 @@ class StorePlayerRequest extends FormRequest
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.max' => 'El nombre no puede superar los 100 caracteres.',
             'nombre.unique' => 'Ya existe un jugador con ese nombre.',
+            'email.email' => 'El correo no es valido.',
         ];
     }
 }

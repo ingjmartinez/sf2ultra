@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Mail\MatchRegistered;
 use App\Models\GameMatch;
 use App\Models\Player;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class MatchService
 {
@@ -16,6 +20,26 @@ class MatchService
 
             return $match;
         });
+    }
+
+    /** Avisa por correo a los jugadores del match (si tienen email) y a los usuarios admin. */
+    public function notifyRegistered(GameMatch $match): void
+    {
+        $match->loadMissing(['ganador', 'perdedor']);
+
+        $recipients = collect([$match->ganador?->email, $match->perdedor?->email])
+            ->merge(User::pluck('email'))
+            ->filter()
+            ->map(fn (string $email) => strtolower($email))
+            ->unique();
+
+        foreach ($recipients as $email) {
+            try {
+                Mail::to($email)->send(new MatchRegistered($match));
+            } catch (Throwable $e) {
+                report($e);
+            }
+        }
     }
 
     public function update(GameMatch $match, array $data): GameMatch

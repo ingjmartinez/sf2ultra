@@ -27,6 +27,14 @@ class PlayerTest extends TestCase
         $this->assertDatabaseHas('players', ['nombre' => 'Chino', 'victorias' => 0, 'derrotas' => 0, 'puntos' => 0]);
     }
 
+    public function test_email_is_optional_but_must_be_valid(): void
+    {
+        $this->post(route('players.store'), ['nombre' => 'Ana', 'email' => 'ana@example.com'])->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('players', ['nombre' => 'Ana', 'email' => 'ana@example.com']);
+
+        $this->post(route('players.store'), ['nombre' => 'Beto', 'email' => 'no-es-correo'])->assertSessionHasErrors('email');
+    }
+
     public function test_name_is_required_and_unique_and_not_injectable(): void
     {
         Player::factory()->create(['nombre' => 'Pan']);

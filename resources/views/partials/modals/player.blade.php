@@ -10,6 +10,10 @@
                 <div class="modal-body">
                     <label class="form-label" for="playerNombre">Nombre</label>
                     <input class="form-control" id="playerNombre" type="text" name="nombre" maxlength="100" required>
+
+                    <label class="form-label mt-3" for="playerEmail">Correo (opcional)</label>
+                    <input class="form-control" id="playerEmail" type="email" name="email" maxlength="255">
+                    <div class="form-text">Recibirá un aviso cuando se registre un match suyo.</div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Guardar</button>
