@@ -16,7 +16,7 @@ class StoreImageRequest extends FormRequest
     {
         return [
             'nombre' => ['nullable', 'string', 'max:100'],
-            'imagen' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+            'imagen' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:10240'],
         ];
     }
 
@@ -27,8 +27,8 @@ class StoreImageRequest extends FormRequest
             'imagen.required' => 'Selecciona una imagen.',
             'imagen.image' => 'El archivo debe ser una imagen.',
             'imagen.mimes' => 'Formatos permitidos: jpg, png, webp o gif.',
-            'imagen.max' => 'La imagen no puede superar los 2 MB.',
-            'imagen.uploaded' => 'No se pudo subir la imagen (maximo 2 MB).',
+            'imagen.max' => 'La imagen no puede superar los 10 MB.',
+            'imagen.uploaded' => 'No se pudo subir la imagen (maximo 10 MB).',
         ];
     }
 }

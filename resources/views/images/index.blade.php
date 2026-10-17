@@ -19,7 +19,7 @@
                     @error('imagen')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                    <div class="form-text">jpg, png, webp o gif. Maximo 2 MB.</div>
+                    <div class="form-text">jpg, png, webp o gif. Maximo 10 MB.</div>
                 </div>
                 <div class="col-12 col-md-4">
                     <label class="form-label" for="imagenNombre">Nombre (opcional)</label>

@@ -33,12 +33,12 @@ class ImageTest extends TestCase
         Storage::disk('uploads')->assertExists($image->ruta);
     }
 
-    public function test_only_images_up_to_2mb_are_accepted(): void
+    public function test_only_images_up_to_10mb_are_accepted(): void
     {
         $this->post(route('imagenes.store'), ['imagen' => UploadedFile::fake()->create('virus.pdf', 10, 'application/pdf')])
             ->assertSessionHasErrors('imagen');
 
-        $this->post(route('imagenes.store'), ['imagen' => UploadedFile::fake()->image('grande.png')->size(3000)])
+        $this->post(route('imagenes.store'), ['imagen' => UploadedFile::fake()->image('grande.png')->size(11000)])
             ->assertSessionHasErrors('imagen');
 
         $this->assertDatabaseCount('images', 0);
