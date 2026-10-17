@@ -34,7 +34,7 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
                                 <a href="{{ route('dashboard') }}" class="d-inline-block auth-logo">
-                                    <span class="fw-bold fs-24 text-white">Street Fighter 2</span>
+                                    <img src="{{ asset('images/logo.jpg') }}" alt="Ultra Street Fighter II" class="rounded" style="max-width: 320px; width: 100%;">
                                 </a>
                             </div>
                             <p class="mt-3 fs-15 fw-medium">Registro de matches y ranking</p>
