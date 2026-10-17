@@ -130,8 +130,8 @@
                                 data-victorias-ganador="{{ $match->victorias_ganador }}"
                                 data-victorias-perdedor="{{ $match->victorias_perdedor }}"
                             >Editar</button>
-                            <form method="post" action="{{ route('matches.destroy', $match) }}" class="d-inline"
-                                onsubmit="return confirm('¿Eliminar este match? Se restaran sus victorias, derrotas y puntos.')">
+                            <form method="post" action="{{ route('matches.destroy', $match) }}" class="d-inline form-eliminar-match"
+                                data-match="{{ $match->ganador->nombre }} vs {{ $match->perdedor->nombre }} ({{ $match->victorias_ganador }}-{{ $match->victorias_perdedor }})">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
@@ -150,10 +150,37 @@
 @endpush
 
 @push('scripts')
+    <script src="{{ asset('velzon/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('velzon/libs/datatables/jquery.min.js') }}"></script>
     <script src="{{ asset('velzon/libs/datatables/dataTables.min.js') }}"></script>
     <script src="{{ asset('velzon/libs/datatables/dataTables.bootstrap5.min.js') }}"></script>
     <script>
+        // Las filas se redibujan al paginar, por eso se delega el evento en la tabla.
+        document.getElementById('matchesTable').addEventListener('submit', function (event) {
+            var form = event.target.closest('.form-eliminar-match');
+
+            if (!form) { return; }
+
+            event.preventDefault();
+
+            Swal.fire({
+                title: '¿Deseas eliminar este pleito?',
+                html: '<strong>' + form.dataset.match.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</strong><br>Se restaran sus victorias, derrotas y puntos. Esta accion no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si, eliminar',
+                cancelButtonText: 'No, cancelar',
+                confirmButtonColor: '#f06548',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true,
+                focusCancel: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
         new DataTable('#matchesTable', {
             order: [[0, 'desc']],
             pageLength: 10,
