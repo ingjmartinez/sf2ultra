@@ -24,6 +24,7 @@
 
                 <div class="mb-4">
                     <h5>Mini ranking del dia</h5>
+                    <p class="text-muted small mb-2">Orden: victorias, enfrentamientos directos y win rate del dia.</p>
                     <div class="table-responsive">
                         <table class="table table-sm table-striped align-middle daily-ranking-table" id="dailyRankingTable">
                             <thead>
@@ -32,6 +33,7 @@
                                     <th>Jugador</th>
                                     <th>V</th>
                                     <th>D</th>
+                                    <th>Win rate</th>
                                     <th>Puntos</th>
                                     <th>Manos</th>
                                 </tr>
@@ -48,12 +50,13 @@
                                         </td>
                                         <td>{{ $row['victorias'] }}</td>
                                         <td>{{ $row['derrotas'] }}</td>
+                                        <td>{{ number_format($row['win_rate'], 2) }}%</td>
                                         <td>{{ $row['puntos'] }}</td>
                                         <td>{{ $row['manos_favor'] }} - {{ $row['manos_contra'] }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted">No hay ranking para este dia.</td>
+                                        <td colspan="7" class="text-center text-muted">No hay ranking para este dia.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

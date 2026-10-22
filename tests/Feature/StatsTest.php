@@ -158,6 +158,67 @@ class StatsTest extends TestCase
         $this->assertCount(3, $response->viewData('dailyMatches'));
     }
 
+    public function test_daily_report_orders_by_match_wins_before_points(): void
+    {
+        $third = Player::factory()->create(['nombre' => 'Chun']);
+        $this->match('2025-07-01 10:00:00', $this->yulaw, $this->pan, 5, 4);
+        $this->match('2025-07-01 11:00:00', $this->yulaw, $this->pan, 5, 4);
+        $this->match('2025-07-01 12:00:00', $this->pan, $third, 5, 0);
+
+        $ranking = $this->get(route('dashboard', ['report_fecha' => '2025-07-01']))->viewData('dailyRankings');
+
+        $this->assertSame(['Yulaw', 'Pan', 'Chun'], $ranking->pluck('nombre')->all());
+        $this->assertSame([2, 3], $ranking->take(2)->pluck('puntos')->all());
+    }
+
+    public function test_daily_report_uses_direct_win_rate_to_break_a_tie_in_victories(): void
+    {
+        $third = Player::factory()->create(['nombre' => 'Chun']);
+        $this->match('2025-07-02 10:00:00', $this->yulaw, $this->pan, 5, 4);
+        $this->match('2025-07-02 11:00:00', $this->yulaw, $this->pan, 5, 4);
+        $this->match('2025-07-02 12:00:00', $this->pan, $this->yulaw, 5, 0);
+        $this->match('2025-07-02 13:00:00', $third, $this->yulaw, 5, 0);
+        $this->match('2025-07-02 14:00:00', $third, $this->yulaw, 5, 0);
+        $this->match('2025-07-02 15:00:00', $third, $this->yulaw, 5, 0);
+        $this->match('2025-07-02 16:00:00', $this->pan, $third, 5, 0);
+
+        $ranking = $this->get(route('dashboard', ['report_fecha' => '2025-07-02']))->viewData('dailyRankings');
+
+        $this->assertSame(['Chun', 'Yulaw', 'Pan'], $ranking->pluck('nombre')->all());
+        $this->assertSame(33.33, $ranking->firstWhere('nombre', 'Yulaw')['win_rate']);
+        $this->assertSame(50.0, $ranking->firstWhere('nombre', 'Pan')['win_rate']);
+    }
+
+    public function test_daily_report_uses_daily_win_rate_when_tied_players_did_not_face_each_other(): void
+    {
+        $third = Player::factory()->create(['nombre' => 'Chun']);
+        $fourth = Player::factory()->create(['nombre' => 'Ken']);
+        $this->match('2025-07-03 10:00:00', $this->yulaw, $third, 5, 4);
+        $this->match('2025-07-03 11:00:00', $third, $this->yulaw, 5, 4);
+        $this->match('2025-07-03 12:00:00', $this->pan, $fourth, 5, 4);
+        $this->match('2025-07-03 13:00:00', $fourth, $this->pan, 5, 4);
+        $this->match('2025-07-03 14:00:00', $fourth, $this->pan, 5, 4);
+
+        $ranking = $this->get(route('dashboard', ['report_fecha' => '2025-07-03']))->viewData('dailyRankings');
+
+        $this->assertSame(['Ken', 'Chun', 'Yulaw', 'Pan'], $ranking->pluck('nombre')->all());
+    }
+
+    public function test_daily_report_uses_daily_win_rate_when_direct_matches_are_tied(): void
+    {
+        $third = Player::factory()->create(['nombre' => 'Chun']);
+        $fourth = Player::factory()->create(['nombre' => 'Ken']);
+        $this->match('2025-07-04 10:00:00', $this->yulaw, $this->pan, 5, 4);
+        $this->match('2025-07-04 11:00:00', $this->pan, $this->yulaw, 5, 4);
+        $this->match('2025-07-04 12:00:00', $this->yulaw, $third, 5, 4);
+        $this->match('2025-07-04 13:00:00', $this->pan, $fourth, 5, 4);
+        $this->match('2025-07-04 14:00:00', $fourth, $this->pan, 5, 4);
+
+        $ranking = $this->get(route('dashboard', ['report_fecha' => '2025-07-04']))->viewData('dailyRankings');
+
+        $this->assertSame(['Yulaw', 'Pan'], $ranking->take(2)->pluck('nombre')->all());
+    }
+
     public function test_player_stats_endpoint(): void
     {
         $this->getJson(route('api.player-stats', ['player' => $this->yulaw->id, 'season' => 2025]))

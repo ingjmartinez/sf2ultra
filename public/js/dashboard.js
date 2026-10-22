@@ -321,9 +321,9 @@ function getTableRows(tableId, expectedCells) {
 function getDailyReportData() {
     return {
         date: document.getElementById("reportFecha").value,
-        rankings: getTableRows("dailyRankingTable", 6),
+        rankings: getTableRows("dailyRankingTable", 7),
         rankingImages: Array.from(document.querySelectorAll("#dailyRankingTable tbody tr"))
-            .filter(row => row.cells.length === 6)
+            .filter(row => row.cells.length === 7)
             .map(row => row.cells[1].querySelector("img")?.src),
         matches: getTableRows("dailyMatchesTable", 4),
         matchImages: Array.from(document.querySelectorAll("#dailyMatchesTable tbody tr"))
@@ -466,7 +466,7 @@ async function createDailyReportCanvas() {
     const rankingImages = await Promise.all(report.rankingImages.map(async src => [
         null,
         await loadReportImage(src),
-        null, null, null, null
+        null, null, null, null, null
     ]));
     const matchImages = await Promise.all(report.matchImages.map(async ([winner, loser]) => [
         null,
@@ -494,7 +494,7 @@ async function createDailyReportCanvas() {
     ctx.fillText(report.date || "Sin fecha", canvas.width / 2, 84);
 
     let y = 158;
-    y = drawDailyReportTable(ctx, "Mini ranking del dia", ["#", "Jugador", "V", "D", "Puntos", "Manos"], rankingRows, y, [70, 420, 90, 90, 140, 250], rankingImages, rankingSizes);
+    y = drawDailyReportTable(ctx, "Mini ranking del dia", ["#", "Jugador", "V", "D", "Win rate", "Puntos", "Manos"], rankingRows, y, [70, 340, 75, 75, 120, 130, 250], rankingImages, rankingSizes);
     drawDailyReportTable(ctx, "Pleitos del dia", ["Fecha", "Ganador", "Perdedor", "Resultado"], matchRows, y, [280, 300, 300, 180], matchImages);
 
     return canvas;
@@ -580,7 +580,7 @@ function printDailyReport() {
 
             return `<td>${thumbnail}${escapeHtml(cell)}</td>`;
         }).join("")}</tr>`).join("") :
-        `<tr><td colspan="6">Sin datos para este dia</td></tr>`;
+        `<tr><td colspan="7">Sin datos para este dia</td></tr>`;
     const matchRows = report.matches.length > 0 ?
         report.matches.map((row, rowIndex) => `<tr>${row.map((cell, cellIndex) => {
             const image = report.matchImages[rowIndex]?.[cellIndex - 1];
@@ -620,7 +620,7 @@ function printDailyReport() {
                 </div>
                 <h2>Mini ranking del dia</h2>
                 <table>
-                    <thead><tr><th>#</th><th>Jugador</th><th>V</th><th>D</th><th>Puntos</th><th>Manos</th></tr></thead>
+                    <thead><tr><th>#</th><th>Jugador</th><th>V</th><th>D</th><th>Win rate</th><th>Puntos</th><th>Manos</th></tr></thead>
                     <tbody>${rankingRows}</tbody>
                 </table>
                 <h2>Pleitos del dia</h2>

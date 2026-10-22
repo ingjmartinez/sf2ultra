@@ -51,11 +51,54 @@ class StatsService
     public function dailyReport(string $date): array
     {
         $matches = $this->matchesOnDate($date);
+        $results = $this->toResults($matches);
 
         return [
-            'ranking' => $this->ranking($this->toResults($matches), tieBreakByHands: true)->values(),
+            'ranking' => $this->dailyRanking($results),
             'matches' => $matches,
         ];
+    }
+
+    /**
+     * @param  Collection<int, PlayerResult>  $results
+     * @return Collection<int, array<string, mixed>>
+     */
+    private function dailyRanking(Collection $results): Collection
+    {
+        return $this->ranking($results)
+            ->values()
+            ->groupBy('victorias')
+            ->sortKeysDesc()
+            ->flatMap(function (Collection $tiedPlayers) use ($results) {
+                $tiedPlayerIds = $tiedPlayers->pluck('id')->all();
+                $directResults = $results
+                    ->filter(fn (PlayerResult $result) => in_array($result->player->id, $tiedPlayerIds, true)
+                        && in_array($result->rival->id, $tiedPlayerIds, true))
+                    ->groupBy(fn (PlayerResult $result) => $result->player->id);
+
+                return $tiedPlayers
+                    ->map(function (array $row) use ($directResults) {
+                        $duels = $directResults->get($row['id'], collect());
+                        $totalMatches = $row['victorias'] + $row['derrotas'];
+
+                        return $row + [
+                            'win_rate' => $totalMatches > 0 ? round($row['victorias'] * 100 / $totalMatches, 2) : 0,
+                            'direct_wins' => $duels->where('won', true)->count(),
+                            'direct_matches' => $duels->count(),
+                        ];
+                    })
+                    ->sort(function (array $first, array $second) {
+                        $firstDirectRate = $first['direct_matches'] > 0 ? $first['direct_wins'] / $first['direct_matches'] : 0;
+                        $secondDirectRate = $second['direct_matches'] > 0 ? $second['direct_wins'] / $second['direct_matches'] : 0;
+                        $firstWinRate = $first['victorias'] / ($first['victorias'] + $first['derrotas']);
+                        $secondWinRate = $second['victorias'] / ($second['victorias'] + $second['derrotas']);
+
+                        return ($secondDirectRate <=> $firstDirectRate)
+                            ?: ($secondWinRate <=> $firstWinRate)
+                            ?: strcmp($first['nombre'], $second['nombre']);
+                    });
+            })
+            ->values();
     }
 
     /**
