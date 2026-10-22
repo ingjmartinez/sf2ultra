@@ -21,7 +21,7 @@
     <link href="{{ asset('velzon/css/icons.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('velzon/css/app.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('velzon/css/custom.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}" rel="stylesheet">
     @stack('styles')
 </head>
 

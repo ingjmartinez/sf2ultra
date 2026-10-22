@@ -52,6 +52,15 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_login_opens_ranking_even_after_visiting_a_protected_page(): void
+    {
+        $this->admin();
+        $this->get(route('dashboard'))->assertRedirect(route('login'));
+
+        $this->post(route('login.store'), ['email' => 'admin@helppro.tech', 'password' => 'Banjersing'])
+            ->assertRedirect(route('ranking.index'));
+    }
+
     public function test_wrong_credentials_are_rejected(): void
     {
         $this->admin();
