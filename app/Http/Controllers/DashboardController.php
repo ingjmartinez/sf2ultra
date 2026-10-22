@@ -27,6 +27,20 @@ class DashboardController extends Controller
 
         $ranking = $this->stats->seasonRanking($season);
         $daily = $this->stats->dailyReport($reportDate);
+        $topPlayerIds = $daily['ranking']->take(3)->pluck('id')->all();
+        $dailyTopImages = [];
+
+        foreach ($daily['matches']->sortByDesc('fecha') as $dailyMatch) {
+            foreach ([[$dailyMatch->ganador_id, $dailyMatch->ganadorImage], [$dailyMatch->perdedor_id, $dailyMatch->perdedorImage]] as [$playerId, $image]) {
+                if (in_array($playerId, $topPlayerIds, true) && ! isset($dailyTopImages[$playerId]) && $image) {
+                    $dailyTopImages[$playerId] = $image->url;
+                }
+            }
+        }
+
+        foreach (Player::with('image')->whereIn('id', $topPlayerIds)->get() as $player) {
+            $dailyTopImages[$player->id] ??= $player->image?->url;
+        }
 
         $matches = GameMatch::query()
             ->with(['ganador:id,nombre', 'perdedor:id,nombre', 'registradoPor:id,name', 'ganadorImage', 'perdedorImage'])
@@ -50,6 +64,7 @@ class DashboardController extends Controller
             'seasonStats' => $this->stats->seasonStats($season),
             'reportDate' => $reportDate,
             'dailyRankings' => $daily['ranking'],
+            'dailyTopImages' => $dailyTopImages,
             'dailyMatches' => $daily['matches'],
             'matches' => $matches,
             'filterPlayer' => $filterPlayer,

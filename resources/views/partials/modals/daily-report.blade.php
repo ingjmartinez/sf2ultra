@@ -25,7 +25,7 @@
                 <div class="mb-4">
                     <h5>Mini ranking del dia</h5>
                     <div class="table-responsive">
-                        <table class="table table-sm table-striped align-middle" id="dailyRankingTable">
+                        <table class="table table-sm table-striped align-middle daily-ranking-table" id="dailyRankingTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -38,9 +38,14 @@
                             </thead>
                             <tbody>
                                 @forelse ($dailyRankings as $row)
-                                    <tr>
+                                    <tr @class(['daily-ranking-leader' => $loop->first, 'daily-ranking-runner-up' => $loop->iteration === 2, 'daily-ranking-third' => $loop->iteration === 3])>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $row['nombre'] }}</td>
+                                        <td>
+                                            @if ($loop->iteration <= 3 && ($dailyTopImages[$row['id']] ?? null))
+                                                <img src="{{ $dailyTopImages[$row['id']] }}" alt="Personaje de {{ $row['nombre'] }}" class="daily-ranking-character" loading="lazy">
+                                            @endif
+                                            <span class="daily-ranking-name">{{ $row['nombre'] }}</span>
+                                        </td>
                                         <td>{{ $row['victorias'] }}</td>
                                         <td>{{ $row['derrotas'] }}</td>
                                         <td>{{ $row['puntos'] }}</td>
@@ -72,8 +77,18 @@
                                 @forelse ($dailyMatches as $dailyMatch)
                                     <tr>
                                         <td>{{ $dailyMatch->fecha->format('Y-m-d H:i:s') }}</td>
-                                        <td>{{ $dailyMatch->ganador->nombre }}</td>
-                                        <td>{{ $dailyMatch->perdedor->nombre }}</td>
+                                        <td>
+                                            @if ($dailyMatch->ganadorImage)
+                                                <img src="{{ $dailyMatch->ganadorImage->url }}" alt="{{ $dailyMatch->ganadorImage->nombre }}" class="rounded-circle me-1" style="width: 28px; height: 28px; object-fit: cover;" loading="lazy">
+                                            @endif
+                                            {{ $dailyMatch->ganador->nombre }}
+                                        </td>
+                                        <td>
+                                            @if ($dailyMatch->perdedorImage)
+                                                <img src="{{ $dailyMatch->perdedorImage->url }}" alt="{{ $dailyMatch->perdedorImage->nombre }}" class="rounded-circle me-1" style="width: 28px; height: 28px; object-fit: cover;" loading="lazy">
+                                            @endif
+                                            {{ $dailyMatch->perdedor->nombre }}
+                                        </td>
                                         <td>{{ $dailyMatch->victorias_ganador }} - {{ $dailyMatch->victorias_perdedor }}</td>
                                     </tr>
                                 @empty

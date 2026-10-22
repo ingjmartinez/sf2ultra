@@ -283,8 +283,10 @@ function downloadBlob(blob, filename) {
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = filename;
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(link.href);
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 60000);
 }
 
 function escapeHtml(value) {
@@ -320,13 +322,70 @@ function getDailyReportData() {
     return {
         date: document.getElementById("reportFecha").value,
         rankings: getTableRows("dailyRankingTable", 6),
-        matches: getTableRows("dailyMatchesTable", 4)
+        rankingImages: Array.from(document.querySelectorAll("#dailyRankingTable tbody tr"))
+            .filter(row => row.cells.length === 6)
+            .map(row => row.cells[1].querySelector("img")?.src),
+        matches: getTableRows("dailyMatchesTable", 4),
+        matchImages: Array.from(document.querySelectorAll("#dailyMatchesTable tbody tr"))
+            .filter(row => row.cells.length === 4)
+            .map(row => [row.cells[1].querySelector("img")?.src, row.cells[2].querySelector("img")?.src])
     };
 }
 
-function drawDailyReportTable(ctx, title, headers, rows, y, colWidths) {
+function loadReportImage(src) {
+    if (!src) {
+        return Promise.resolve(null);
+    }
+
+    return new Promise(resolve => {
+        const imageUrl = new URL(src, window.location.href);
+        const isLocalUpload = imageUrl.pathname.includes("/uploads/");
+        const image = new Image();
+        const timeout = setTimeout(() => resolve(null), 5000);
+        image.onload = () => {
+            clearTimeout(timeout);
+            resolve(image);
+        };
+        image.onerror = () => {
+            clearTimeout(timeout);
+            resolve(null);
+        };
+        if (!isLocalUpload && imageUrl.origin !== window.location.origin) {
+            image.crossOrigin = "anonymous";
+        }
+        image.src = isLocalUpload ? `${window.location.origin}${imageUrl.pathname}${imageUrl.search}` : imageUrl.href;
+    });
+}
+
+function dailyReportBlob() {
+    return createDailyReportCanvas().then(canvas => new Promise((resolve, reject) => {
+        try {
+            canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("No se pudo crear la imagen.")), "image/jpeg", 0.92);
+        } catch (error) {
+            reject(error);
+        }
+    }));
+}
+
+let preparedDailyReportBlob = null;
+
+document.getElementById("modalReporteDia").addEventListener("shown.bs.modal", () => {
+    dailyReportBlob()
+        .then(blob => { preparedDailyReportBlob = blob; })
+        .catch(() => { preparedDailyReportBlob = null; });
+});
+
+function showDailyReportError() {
+    Swal.fire({
+        icon: "error",
+        title: "No se pudo preparar el reporte",
+        text: "Intenta de nuevo o usa PDF / Imprimir."
+    });
+}
+
+function drawDailyReportTable(ctx, title, headers, rows, y, colWidths, rowImages = [], rowSizes = []) {
     const x = 60;
-    const rowHeight = 34;
+    const headerHeight = 34;
     const tableWidth = colWidths.reduce((total, width) => total + width, 0);
 
     ctx.fillStyle = "#111827";
@@ -336,7 +395,7 @@ function drawDailyReportTable(ctx, title, headers, rows, y, colWidths) {
     y += 22;
 
     ctx.fillStyle = "#0d6efd";
-    ctx.fillRect(x, y, tableWidth, rowHeight);
+    ctx.fillRect(x, y, tableWidth, headerHeight);
     ctx.fillStyle = "#ffffff";
     ctx.font = "700 18px Arial";
 
@@ -346,26 +405,50 @@ function drawDailyReportTable(ctx, title, headers, rows, y, colWidths) {
         currentX += colWidths[index];
     });
 
-    y += rowHeight;
+    y += headerHeight;
 
     if (rows.length === 0) {
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(x, y, tableWidth, rowHeight);
+        ctx.fillRect(x, y, tableWidth, headerHeight);
         ctx.fillStyle = "#4b5563";
         ctx.font = "600 18px Arial";
         ctx.fillText("Sin datos para este dia", x + 12, y + 23);
-        return y + rowHeight + 32;
+        return y + headerHeight + 32;
     }
 
     rows.forEach((row, rowIndex) => {
-        ctx.fillStyle = rowIndex % 2 === 0 ? "#ffffff" : "#eef4fb";
+        const rowHeight = rowSizes[rowIndex] || (rowImages.length ? 40 : 34);
+        ctx.fillStyle = rowSizes.length && rowIndex === 0 ? "#fff4ce" : rowSizes.length && rowIndex === 1 ? "#edf2f8" : rowSizes.length && rowIndex === 2 ? "#f8eee6" : rowIndex % 2 === 0 ? "#ffffff" : "#eef4fb";
         ctx.fillRect(x, y, tableWidth, rowHeight);
         ctx.fillStyle = "#111827";
         ctx.font = "600 18px Arial";
 
         currentX = x;
         row.forEach((cell, index) => {
-            ctx.fillText(truncateCanvasText(ctx, cell, colWidths[index] - 18), currentX + 12, y + 23);
+            const image = rowImages[rowIndex]?.[index];
+            const imageSize = rowSizes.length ? ([76, 60, 50][rowIndex] || 26) : 26;
+            const textOffset = image ? imageSize + 22 : 12;
+
+            if (image) {
+                const imageX = currentX + 10;
+                const imageY = y + (rowHeight - imageSize) / 2;
+                const cropSize = Math.min(image.naturalWidth, image.naturalHeight);
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(imageX + imageSize / 2, y + rowHeight / 2, imageSize / 2, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(image, (image.naturalWidth - cropSize) / 2, (image.naturalHeight - cropSize) / 2, cropSize, cropSize, imageX, imageY, imageSize, imageSize);
+                ctx.restore();
+                if (rowSizes.length && rowIndex < 3) {
+                    ctx.strokeStyle = ["#a67614", "#718096", "#9c674b"][rowIndex];
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(imageX + imageSize / 2, y + rowHeight / 2, imageSize / 2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            ctx.fillText(truncateCanvasText(ctx, cell, colWidths[index] - textOffset - 6), currentX + textOffset, y + rowHeight / 2 + 6);
             currentX += colWidths[index];
         });
 
@@ -375,14 +458,26 @@ function drawDailyReportTable(ctx, title, headers, rows, y, colWidths) {
     return y + 32;
 }
 
-function createDailyReportCanvas() {
+async function createDailyReportCanvas() {
     const report = getDailyReportData();
     const rankingRows = report.rankings;
     const matchRows = report.matches;
+    const rankingSizes = rankingRows.map((_, index) => [96, 78, 68][index] || 34);
+    const rankingImages = await Promise.all(report.rankingImages.map(async src => [
+        null,
+        await loadReportImage(src),
+        null, null, null, null
+    ]));
+    const matchImages = await Promise.all(report.matchImages.map(async ([winner, loser]) => [
+        null,
+        await loadReportImage(winner),
+        await loadReportImage(loser),
+        null
+    ]));
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    const rankingHeight = Math.max(1, rankingRows.length) * 34 + 92;
-    const matchesHeight = Math.max(1, matchRows.length) * 34 + 92;
+    const rankingHeight = (rankingSizes.length ? rankingSizes.reduce((total, size) => total + size, 0) : 34) + 92;
+    const matchesHeight = Math.max(1, matchRows.length) * (matchImages.length ? 40 : 34) + 92;
 
     canvas.width = 1100;
     canvas.height = 150 + rankingHeight + matchesHeight;
@@ -399,39 +494,75 @@ function createDailyReportCanvas() {
     ctx.fillText(report.date || "Sin fecha", canvas.width / 2, 84);
 
     let y = 158;
-    y = drawDailyReportTable(ctx, "Mini ranking del dia", ["#", "Jugador", "V", "D", "Puntos", "Manos"], rankingRows, y, [70, 420, 90, 90, 140, 250]);
-    drawDailyReportTable(ctx, "Pleitos del dia", ["Fecha", "Ganador", "Perdedor", "Resultado"], matchRows, y, [280, 300, 300, 180]);
+    y = drawDailyReportTable(ctx, "Mini ranking del dia", ["#", "Jugador", "V", "D", "Puntos", "Manos"], rankingRows, y, [70, 420, 90, 90, 140, 250], rankingImages, rankingSizes);
+    drawDailyReportTable(ctx, "Pleitos del dia", ["Fecha", "Ganador", "Perdedor", "Resultado"], matchRows, y, [280, 300, 300, 180], matchImages);
 
     return canvas;
 }
 
-function exportDailyReportImage() {
-    createDailyReportCanvas().toBlob(blob => {
+async function exportDailyReportImage() {
+    try {
+        const blob = preparedDailyReportBlob || await dailyReportBlob();
         downloadBlob(blob, `reporte-dia-${getDailyReportData().date || "sin-fecha"}.jpg`);
-    }, "image/jpeg", 0.92);
+    } catch (error) {
+        showDailyReportError();
+    }
 }
 
-function shareDailyReport() {
-    createDailyReportCanvas().toBlob(blob => {
+async function shareDailyReport() {
+    const isPrepared = Boolean(preparedDailyReportBlob);
+
+    if (!isPrepared) {
+        Swal.fire({
+            title: "Preparando reporte",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => Swal.showLoading()
+        });
+    }
+
+    try {
+        const blob = preparedDailyReportBlob || await dailyReportBlob();
+        if (!isPrepared) {
+            Swal.close();
+        }
         const report = getDailyReportData();
         const filename = `reporte-dia-${report.date || "sin-fecha"}.jpg`;
-        const file = new File([blob], filename, {
-            type: "image/jpeg"
-        });
+        const file = new File([blob], filename, { type: "image/jpeg" });
 
-        if (navigator.canShare && navigator.canShare({
-                files: [file]
-            })) {
-            navigator.share({
-                title: "Reporte del Dia",
-                text: `Reporte del Dia ${report.date || ""}`.trim(),
-                files: [file]
-            });
-            return;
+        let canShareFile = false;
+
+        try {
+            canShareFile = Boolean(navigator.share && navigator.canShare?.({ files: [file] }));
+        } catch (error) {
+            canShareFile = false;
+        }
+
+        if (isPrepared && canShareFile) {
+            try {
+                await navigator.share({
+                    title: "Reporte del Dia",
+                    text: `Reporte del Dia ${report.date || ""}`.trim(),
+                    files: [file]
+                });
+                return;
+            } catch (error) {
+                if (error.name === "AbortError") {
+                    return;
+                }
+            }
         }
 
         downloadBlob(blob, filename);
-    }, "image/jpeg", 0.92);
+        Swal.fire({
+            icon: "info",
+            title: "Reporte descargado",
+            text: "Tu navegador no pudo abrir el menú para compartir. Puedes enviar el JPG descargado."
+        });
+    } catch (error) {
+        Swal.close();
+        showDailyReportError();
+    }
 }
 
 function printDailyReport() {
@@ -443,10 +574,20 @@ function printDailyReport() {
     }
 
     const rankingRows = report.rankings.length > 0 ?
-        report.rankings.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("") :
+        report.rankings.map((row, rowIndex) => `<tr class="ranking-place-${rowIndex + 1}">${row.map((cell, cellIndex) => {
+            const image = cellIndex === 1 ? report.rankingImages[rowIndex] : null;
+            const thumbnail = image ? `<img src="${escapeHtml(image)}" alt="" class="ranking-character">` : "";
+
+            return `<td>${thumbnail}${escapeHtml(cell)}</td>`;
+        }).join("")}</tr>`).join("") :
         `<tr><td colspan="6">Sin datos para este dia</td></tr>`;
     const matchRows = report.matches.length > 0 ?
-        report.matches.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("") :
+        report.matches.map((row, rowIndex) => `<tr>${row.map((cell, cellIndex) => {
+            const image = report.matchImages[rowIndex]?.[cellIndex - 1];
+            const thumbnail = image ? `<img src="${escapeHtml(image)}" alt="" class="character-thumbnail">` : "";
+
+            return `<td>${thumbnail}${escapeHtml(cell)}</td>`;
+        }).join("")}</tr>`).join("") :
         `<tr><td colspan="4">Sin pleitos para este dia</td></tr>`;
 
     printWindow.document.write(`
@@ -463,6 +604,13 @@ function printDailyReport() {
                     th { background: #0d6efd; color: #fff; text-align: left; }
                     th, td { border: 1px solid #dfe7f1; padding: 8px 10px; }
                     tr:nth-child(even) td { background: #f4f7fb; }
+                    .ranking-place-1 td { background: #fff4ce !important; font-weight: 800; }
+                    .ranking-place-2 td { background: #edf2f8 !important; font-weight: 700; }
+                    .ranking-place-3 td { background: #f8eee6 !important; font-weight: 700; }
+                    .ranking-character { border-radius: 50%; height: 56px; margin-right: 8px; object-fit: cover; vertical-align: middle; width: 56px; }
+                    .ranking-place-1 .ranking-character { height: 84px; width: 84px; }
+                    .ranking-place-2 .ranking-character { height: 68px; width: 68px; }
+                    .character-thumbnail { border-radius: 50%; height: 28px; margin-right: 6px; object-fit: cover; vertical-align: middle; width: 28px; }
                 </style>
             </head>
             <body>
@@ -484,8 +632,13 @@ function printDailyReport() {
         </html>
     `);
     printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+    Promise.all(Array.from(printWindow.document.images).map(image => image.complete ? Promise.resolve() : new Promise(resolve => {
+        image.onload = resolve;
+        image.onerror = resolve;
+    }))).then(() => {
+        printWindow.focus();
+        printWindow.print();
+    });
 }
 
 function getQuickMatchDateText() {

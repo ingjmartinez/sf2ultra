@@ -197,7 +197,9 @@ class StatsService
     /** @return Collection<int, GameMatch> */
     private function matchesOnDate(string $date): Collection
     {
-        return $this->withPlayers(GameMatch::query()->onDate($date))->get();
+        return $this->withPlayers(GameMatch::query()->onDate($date))
+            ->with(['ganadorImage', 'perdedorImage'])
+            ->get();
     }
 
     /** @return Collection<int, PlayerResult> */

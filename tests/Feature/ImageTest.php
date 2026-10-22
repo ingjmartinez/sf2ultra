@@ -94,6 +94,9 @@ class ImageTest extends TestCase
 
         $this->assertDatabaseHas('matches', ['ganador_id' => $winner->id, 'ganador_image_id' => $ryu->id, 'perdedor_image_id' => $ken->id]);
         $this->get(route('dashboard', ['season' => 2026]))->assertSee($ryu->url, false)->assertSee($ken->url, false);
+        $this->get(route('dashboard', ['season' => 2026, 'report_fecha' => '2026-05-10']))
+            ->assertSeeInOrder(['daily-ranking-leader', $ryu->url, 'daily-ranking-runner-up', $ken->url], false)
+            ->assertSeeInOrder(['id="dailyMatchesTable"', $ryu->url, $ken->url], false);
 
         // es opcional
         $this->post(route('matches.store'), $payload + ['ganador_image_id' => '', 'perdedor_image_id' => ''])
@@ -101,6 +104,21 @@ class ImageTest extends TestCase
         $this->assertDatabaseHas('matches', ['ganador_image_id' => null, 'perdedor_image_id' => null]);
 
         $this->post(route('matches.store'), $payload + ['ganador_image_id' => 9999])->assertSessionHasErrors('ganador_image_id');
+    }
+
+    public function test_daily_ranking_uses_player_image_when_match_has_no_character(): void
+    {
+        $image = Image::factory()->create(['nombre' => 'Guile']);
+        $winner = Player::factory()->create(['image_id' => $image->id]);
+        $loser = Player::factory()->create();
+
+        $this->post(route('matches.store'), [
+            'fecha' => '2026-05-10T20:30', 'ganador_id' => $winner->id, 'perdedor_id' => $loser->id,
+            'victorias_ganador' => 5, 'victorias_perdedor' => 2,
+        ])->assertSessionHasNoErrors();
+
+        $this->get(route('dashboard', ['season' => 2026, 'report_fecha' => '2026-05-10']))
+            ->assertSeeInOrder(['daily-ranking-leader', $image->url], false);
     }
 
     public function test_players_page_shows_the_image_picker(): void

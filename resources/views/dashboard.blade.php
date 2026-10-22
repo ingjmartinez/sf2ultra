@@ -209,7 +209,7 @@
             ],
         ]) }};
     </script>
-    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') }}?v={{ filemtime(public_path('js/dashboard.js')) }}"></script>
     <script>
         (function () {
             var id = new URLSearchParams(window.location.search).get('abrir');

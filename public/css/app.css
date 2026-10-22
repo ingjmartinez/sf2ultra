@@ -211,6 +211,49 @@
     max-height: none;
 }
 
+.daily-ranking-table tbody tr.daily-ranking-leader {
+    --bs-table-bg: #fff4ce;
+    --bs-table-striped-bg: #fff4ce;
+    color: #76520d;
+    font-weight: 800;
+}
+
+.daily-ranking-table tbody tr.daily-ranking-runner-up {
+    --bs-table-bg: #edf2f8;
+    --bs-table-striped-bg: #edf2f8;
+    font-weight: 700;
+}
+
+.daily-ranking-table tbody tr.daily-ranking-third {
+    --bs-table-bg: #f8eee6;
+    --bs-table-striped-bg: #f8eee6;
+    font-weight: 700;
+}
+
+.daily-ranking-character {
+    border: 3px solid currentColor;
+    border-radius: 50%;
+    height: 56px;
+    margin-right: 10px;
+    object-fit: cover;
+    vertical-align: middle;
+    width: 56px;
+}
+
+.daily-ranking-leader .daily-ranking-character {
+    height: 84px;
+    width: 84px;
+}
+
+.daily-ranking-runner-up .daily-ranking-character {
+    height: 68px;
+    width: 68px;
+}
+
+.daily-ranking-name {
+    white-space: nowrap;
+}
+
 .daily-report-actions {
     display: grid;
     gap: 8px;
