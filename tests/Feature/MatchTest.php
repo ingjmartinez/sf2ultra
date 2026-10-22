@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Mail\MatchRegistered;
 use App\Models\GameMatch;
 use App\Models\Player;
 use App\Models\User;
@@ -178,29 +177,15 @@ class MatchTest extends TestCase
         $this->assertDatabaseHas('players', ['id' => $a->id, 'victorias' => 0, 'puntos' => 0]);
     }
 
-    public function test_storing_a_match_emails_players_and_admins_once_each(): void
+    public function test_storing_a_match_does_not_send_email(): void
     {
         Mail::fake();
-        $admin = User::first();
         $winner = Player::factory()->create(['email' => 'gana@example.com']);
-        $loser = Player::factory()->create(['email' => strtoupper($admin->email)]);
-        Player::factory()->create(['email' => 'otro@example.com']);
+        $loser = Player::factory()->create(['email' => 'pierde@example.com']);
 
         $this->post(route('matches.store'), $this->payload($winner, $loser))->assertSessionHas('success');
 
-        Mail::assertSent(MatchRegistered::class, 2);
-        Mail::assertSent(MatchRegistered::class, fn ($m) => $m->hasTo('gana@example.com'));
-        Mail::assertSent(MatchRegistered::class, fn ($m) => $m->hasTo(strtolower($admin->email)));
-        Mail::assertNotSent(MatchRegistered::class, fn ($m) => $m->hasTo('otro@example.com'));
-    }
-
-    public function test_a_mail_failure_does_not_break_match_registration(): void
-    {
-        Mail::shouldReceive('to')->andThrow(new \RuntimeException('smtp down'));
-        [$winner, $loser] = Player::factory()->count(2)->create();
-
-        $this->post(route('matches.store'), $this->payload($winner, $loser))->assertSessionHas('success');
-
+        Mail::assertNothingSent();
         $this->assertDatabaseCount('matches', 1);
     }
 

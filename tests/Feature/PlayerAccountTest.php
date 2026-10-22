@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Mail\MatchRegistered;
 use App\Models\GameMatch;
 use App\Models\Player;
 use App\Models\User;
@@ -106,7 +105,7 @@ class PlayerAccountTest extends TestCase
         $this->get(route('ranking.index'))->assertSee(route('players.index'), false)->assertSee(route('imagenes.index'), false);
     }
 
-    public function test_match_notifications_go_to_admins_and_the_match_players_not_to_every_player_account(): void
+    public function test_match_registration_sends_no_email_to_player_accounts(): void
     {
         Mail::fake();
         $admin = User::factory()->create(['email' => 'admin@example.com']);
@@ -120,8 +119,6 @@ class PlayerAccountTest extends TestCase
             'victorias_ganador' => 5, 'victorias_perdedor' => 2,
         ]);
 
-        Mail::assertSent(MatchRegistered::class, fn ($mail) => $mail->hasTo('admin@example.com'));
-        Mail::assertSent(MatchRegistered::class, fn ($mail) => $mail->hasTo('ganador@example.com'));
-        Mail::assertNotSent(MatchRegistered::class, fn ($mail) => $mail->hasTo('otro-player@example.com'));
+        Mail::assertNothingSent();
     }
 }

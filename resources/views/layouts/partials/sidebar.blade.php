@@ -31,42 +31,42 @@
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span>Menu</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link @if (request()->routeIs('ranking.*')) active @endif" href="{{ route('ranking.index') }}">
+                    <a class="nav-link menu-link sidebar-ranking @if (request()->routeIs('ranking.*')) active @endif" href="{{ route('ranking.index') }}">
                         <i class="ri-trophy-line"></i> <span>Ranking</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link @if (request()->routeIs('dashboard')) active @endif" href="{{ route('dashboard') }}">
+                    <a class="nav-link menu-link sidebar-dashboard @if (request()->routeIs('dashboard')) active @endif" href="{{ route('dashboard') }}">
                         <i class="ri-dashboard-2-line"></i> <span>Tablero</span>
                     </a>
                 </li>
                 @if (auth()->user()->is_admin)
                 <li class="nav-item">
-                    <a class="nav-link menu-link @if (request()->routeIs('players.*')) active @endif" href="{{ route('players.index') }}">
+                    <a class="nav-link menu-link sidebar-players @if (request()->routeIs('players.*')) active @endif" href="{{ route('players.index') }}">
                         <i class="ri-team-line"></i> <span>Players</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link @if (request()->routeIs('imagenes.*')) active @endif" href="{{ route('imagenes.index') }}">
+                    <a class="nav-link menu-link sidebar-images @if (request()->routeIs('imagenes.*')) active @endif" href="{{ route('imagenes.index') }}">
                         <i class="ri-image-line"></i> <span>Imagenes</span>
                     </a>
                 </li>
                 @endif
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalTemporada') !!}>
+                    <a class="nav-link menu-link sidebar-season" {!! $modalLink('modalTemporada') !!}>
                         <i class="ri-calendar-event-line"></i> <span>Temporada {{ $season ?? now()->year }}</span>
                     </a>
                 </li>
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>Registro</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalPleitoMovil') !!}>
+                    <a class="nav-link menu-link sidebar-match" {!! $modalLink('modalPleitoMovil') !!}>
                         <i class="ri-sword-line"></i> <span>Registrar Pleito</span>
                     </a>
                 </li>
                 @if (auth()->user()->is_admin)
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalPlayer') !!}>
+                    <a class="nav-link menu-link sidebar-register-player" {!! $modalLink('modalPlayer') !!}>
                         <i class="ri-user-add-line"></i> <span>Registrar Player</span>
                     </a>
                 </li>
@@ -74,22 +74,22 @@
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>Consultas</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalReporteDia') !!}>
+                    <a class="nav-link menu-link sidebar-report" {!! $modalLink('modalReporteDia') !!}>
                         <i class="ri-file-list-3-line"></i> <span>Reporte del Dia</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalVSDia') !!}>
+                    <a class="nav-link menu-link sidebar-versus" {!! $modalLink('modalVSDia') !!}>
                         <i class="ri-team-line"></i> <span>VS</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalEstadisticas') !!}>
+                    <a class="nav-link menu-link sidebar-stats" {!! $modalLink('modalEstadisticas') !!}>
                         <i class="ri-bar-chart-2-line"></i> <span>Estadisticas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" {!! $modalLink('modalRankingPuntos') !!}>
+                    <a class="nav-link menu-link sidebar-points" {!! $modalLink('modalRankingPuntos') !!}>
                         <i class="ri-trophy-line"></i> <span>Ranking por puntos</span>
                     </a>
                 </li>

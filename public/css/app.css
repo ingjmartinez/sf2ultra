@@ -4,23 +4,42 @@
 }
 
 .navbar-menu .navbar-nav .nav-link.menu-link {
-    background: #f7f9fc;
-    border: 1px solid #e5eaf2;
+    background: var(--sidebar-button-bg);
+    border: 1px solid var(--sidebar-button-border);
     border-radius: 10px;
-    margin: 3px 10px;
+    color: var(--sidebar-button-color);
+    margin: 6px 10px;
     padding: 10px 12px;
-    transition: background-color .2s, border-color .2s, box-shadow .2s;
+    transition: background-color .2s, border-color .2s, box-shadow .2s, transform .2s;
 }
 
-.navbar-menu .navbar-nav .nav-link.menu-link:hover {
-    background: #edf2fb;
-    border-color: #c9d5ed;
+.navbar-menu .navbar-nav .nav-link.menu-link i {
+    color: inherit;
 }
 
+.navbar-menu .navbar-nav .nav-link.menu-link:hover,
 .navbar-menu .navbar-nav .nav-link.menu-link.active {
-    background: #e9efff;
-    border-color: #aebfe9;
-    box-shadow: 0 2px 6px rgba(64, 81, 137, .12);
+    background: var(--sidebar-button-hover);
+    border-color: var(--sidebar-button-color);
+    color: var(--sidebar-button-color);
+    box-shadow: 0 2px 8px rgba(33, 45, 74, .12);
+    transform: translateY(-1px);
+}
+
+.sidebar-ranking { --sidebar-button-bg: #eef0ff; --sidebar-button-border: #cfd4fa; --sidebar-button-color: #414fa4; --sidebar-button-hover: #dfe4ff; }
+.sidebar-dashboard { --sidebar-button-bg: #e9f3ff; --sidebar-button-border: #bfdaff; --sidebar-button-color: #225b9e; --sidebar-button-hover: #d8eaff; }
+.sidebar-players { --sidebar-button-bg: #f4edff; --sidebar-button-border: #dcc8f8; --sidebar-button-color: #7041a2; --sidebar-button-hover: #eadbff; }
+.sidebar-images { --sidebar-button-bg: #fff0f6; --sidebar-button-border: #f5c9dc; --sidebar-button-color: #a53d6c; --sidebar-button-hover: #ffe0ee; }
+.sidebar-season { --sidebar-button-bg: #fff4df; --sidebar-button-border: #f4d59d; --sidebar-button-color: #87590c; --sidebar-button-hover: #ffebc2; }
+.sidebar-match { --sidebar-button-bg: #d9f2e4; --sidebar-button-border: #75c99c; --sidebar-button-color: #176b43; --sidebar-button-hover: #bce8d0; }
+.sidebar-register-player { --sidebar-button-bg: #e4f5f3; --sidebar-button-border: #a4dad3; --sidebar-button-color: #216c65; --sidebar-button-hover: #cdf0eb; }
+.sidebar-report { --sidebar-button-bg: #fff0e8; --sidebar-button-border: #f1c3a8; --sidebar-button-color: #96532e; --sidebar-button-hover: #ffe3d2; }
+.sidebar-versus { --sidebar-button-bg: #fcecee; --sidebar-button-border: #efbec6; --sidebar-button-color: #a23d51; --sidebar-button-hover: #f9dce1; }
+.sidebar-stats { --sidebar-button-bg: #e9f3fb; --sidebar-button-border: #b9d7ea; --sidebar-button-color: #336b8d; --sidebar-button-hover: #d7eafa; }
+.sidebar-points { --sidebar-button-bg: #f8f0dc; --sidebar-button-border: #e5cf91; --sidebar-button-color: #846415; --sidebar-button-hover: #f4e6bc; }
+
+[data-layout-mode="dark"] .navbar-menu .navbar-nav .nav-link.menu-link {
+    color: var(--sidebar-button-color);
 }
 
 .bg-green {
