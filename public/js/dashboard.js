@@ -726,12 +726,31 @@ dailyReportShareButton.addEventListener("click", shareDailyReport);
 dailyReportImageButton.addEventListener("click", exportDailyReportImage);
 dailyReportPrintButton.addEventListener("click", printDailyReport);
 
+function showSavingResults(form) {
+    Swal.fire({
+        title: "Guardando resultados",
+        text: "Espera un momento...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    setTimeout(() => form.submit(), 100);
+}
+
 quickMatchForm.addEventListener("submit", event => {
     updateQuickMatch();
 
     if (!quickMatchStarted || quickSaveButton.disabled) {
         event.preventDefault();
+
+        return;
     }
+
+    event.preventDefault();
+    quickSaveButton.disabled = true;
+    showSavingResults(quickMatchForm);
 });
 
 quickModal.addEventListener("hidden.bs.modal", () => {
@@ -784,17 +803,17 @@ document.getElementById("matchesTable").addEventListener("click", event => {
 editVictoriasGanador.addEventListener("change", updateEditLoserMax);
 
 editMatchForm.addEventListener("submit", event => {
-    if (editMatchForm.dataset.confirmed === "1") {
+    event.preventDefault();
+
+    if (editFechaMatch.value !== editFechaMatch.dataset.original && isEarlyMorningDate(editFechaMatch.value)) {
+        confirmEarlyMorning(editFechaMatch.value, () => {
+            showSavingResults(editMatchForm);
+        });
+
         return;
     }
 
-    if (editFechaMatch.value !== editFechaMatch.dataset.original && isEarlyMorningDate(editFechaMatch.value)) {
-        event.preventDefault();
-        confirmEarlyMorning(editFechaMatch.value, () => {
-            editMatchForm.dataset.confirmed = "1";
-            editMatchForm.submit();
-        });
-    }
+    showSavingResults(editMatchForm);
 });
 
 
