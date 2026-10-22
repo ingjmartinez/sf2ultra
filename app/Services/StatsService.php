@@ -47,7 +47,7 @@ class StatsService
             ]);
     }
 
-    /** @return array{ranking: Collection<int, array<string, mixed>>, matches: Collection<int, GameMatch>} */
+    /** @return array{ranking: Collection<int, array<string, mixed>>, matches: Collection<int, GameMatch>, winRateChanges: array<int, array{winner: float, loser: float}>} */
     public function dailyReport(string $date): array
     {
         $matches = $this->matchesOnDate($date);
@@ -56,7 +56,55 @@ class StatsService
         return [
             'ranking' => $this->dailyRanking($results),
             'matches' => $matches,
+            'winRateChanges' => $this->winRateChanges($matches),
         ];
+    }
+
+    /**
+     * @param  Collection<int, GameMatch>  $matches
+     * @return array<int, array{winner: float, loser: float}>
+     */
+    public function winRateChanges(Collection $matches): array
+    {
+        if ($matches->isEmpty()) {
+            return [];
+        }
+
+        $matchIds = $matches->pluck('id')->flip();
+        $playerIds = $matches->pluck('ganador_id')->merge($matches->pluck('perdedor_id'))->unique()->all();
+        $record = [];
+        $changes = [];
+
+        GameMatch::query()
+            ->inSeason($matches->first()->fecha->year)
+            ->where('fecha', '<=', $matches->max('fecha'))
+            ->whereNotNull('ganador_id')
+            ->whereNotNull('perdedor_id')
+            ->where(fn (Builder $query) => $query->whereIn('ganador_id', $playerIds)->orWhereIn('perdedor_id', $playerIds))
+            ->orderBy('fecha')
+            ->orderBy('id')
+            ->get(['id', 'fecha', 'ganador_id', 'perdedor_id'])
+            ->each(function (GameMatch $match) use (&$record, &$changes, $matchIds) {
+                $winner = $record[$match->ganador_id] ?? ['wins' => 0, 'total' => 0];
+                $loser = $record[$match->perdedor_id] ?? ['wins' => 0, 'total' => 0];
+
+                if ($matchIds->has($match->id)) {
+                    $changes[$match->id] = [
+                        'winner' => round($this->winRatePercentage($winner['wins'] + 1, $winner['total'] + 1) - $this->winRatePercentage($winner['wins'], $winner['total']), 2),
+                        'loser' => round($this->winRatePercentage($loser['wins'], $loser['total'] + 1) - $this->winRatePercentage($loser['wins'], $loser['total']), 2),
+                    ];
+                }
+
+                $record[$match->ganador_id] = ['wins' => $winner['wins'] + 1, 'total' => $winner['total'] + 1];
+                $record[$match->perdedor_id] = ['wins' => $loser['wins'], 'total' => $loser['total'] + 1];
+            });
+
+        return $changes;
+    }
+
+    private function winRatePercentage(int $wins, int $total): float
+    {
+        return $total > 0 ? round($wins * 100 / $total, 2) : 0.0;
     }
 
     /**
@@ -315,7 +363,7 @@ class StatsService
                     'total_match' => $total,
                     'total_victorias' => $wins,
                     'total_derrotas' => $total - $wins,
-                    'porcentaje_victoria' => round($wins * 100 / $total, 2),
+                    'porcentaje_victoria' => $this->winRatePercentage($wins, $total),
                     'porcentaje_derrota' => round(($total - $wins) * 100 / $total, 2),
                 ];
             })

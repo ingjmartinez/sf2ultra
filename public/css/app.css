@@ -211,6 +211,13 @@
     max-height: none;
 }
 
+.daily-win-rate-change {
+    display: inline-block;
+    font-size: .8rem;
+    margin-left: 6px;
+    white-space: nowrap;
+}
+
 .daily-ranking-table tbody tr.daily-ranking-leader {
     --bs-table-bg: #fff4ce;
     --bs-table-striped-bg: #fff4ce;

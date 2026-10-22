@@ -55,6 +55,7 @@
     </div>
 
     <h2>Matches Points - Season {{ $season }}</h2>
+    <p class="small text-muted">Cambio en porcentaje de victoria: +22 equivale a +0.22 puntos porcentuales.</p>
     <form action="{{ route('dashboard') }}" method="get">
         <input type="hidden" name="season" value="{{ $season }}">
         <div class="matches-filter">
@@ -104,12 +105,14 @@
                                 <img src="{{ $match->ganadorImage->url }}" alt="{{ $match->ganadorImage->nombre }}" title="{{ $match->ganadorImage->nombre }}" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;" loading="lazy">
                             @endif
                             {{ $match->ganador->nombre }}
+                            <span class="daily-win-rate-change text-success fw-bold" title="Cambio en porcentaje de victoria: +{{ number_format($matchWinRateChanges[$match->id]['winner'], 2) }} pp">+{{ sprintf('%02d', (int) round($matchWinRateChanges[$match->id]['winner'] * 100)) }}</span>
                         </td>
                         <td>
                             @if ($match->perdedorImage)
                                 <img src="{{ $match->perdedorImage->url }}" alt="{{ $match->perdedorImage->nombre }}" title="{{ $match->perdedorImage->nombre }}" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;" loading="lazy">
                             @endif
                             {{ $match->perdedor->nombre }}
+                            <span class="daily-win-rate-change text-danger fw-bold" title="Cambio en porcentaje de victoria: -{{ number_format(abs($matchWinRateChanges[$match->id]['loser']), 2) }} pp">-{{ sprintf('%02d', (int) round(abs($matchWinRateChanges[$match->id]['loser']) * 100)) }}</span>
                         </td>
                         <td>{{ $match->victorias_ganador }}</td>
                         <td>{{ $match->victorias_perdedor }}</td>

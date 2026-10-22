@@ -319,16 +319,25 @@ function getTableRows(tableId, expectedCells) {
 }
 
 function getDailyReportData() {
+    const matchRows = Array.from(document.querySelectorAll("#dailyMatchesTable tbody tr"))
+        .filter(row => row.cells.length === 4);
+
     return {
         date: document.getElementById("reportFecha").value,
         rankings: getTableRows("dailyRankingTable", 7),
         rankingImages: Array.from(document.querySelectorAll("#dailyRankingTable tbody tr"))
             .filter(row => row.cells.length === 7)
             .map(row => row.cells[1].querySelector("img")?.src),
-        matches: getTableRows("dailyMatchesTable", 4),
-        matchImages: Array.from(document.querySelectorAll("#dailyMatchesTable tbody tr"))
-            .filter(row => row.cells.length === 4)
-            .map(row => [row.cells[1].querySelector("img")?.src, row.cells[2].querySelector("img")?.src])
+        matches: matchRows.map(row => Array.from(row.cells).map(cell =>
+            (cell.querySelector(".daily-player-name") || cell).textContent.trim()
+        )),
+        matchChanges: matchRows.map(row => [
+            null,
+            row.cells[1].querySelector("[data-win-rate-change]")?.textContent.trim(),
+            row.cells[2].querySelector("[data-win-rate-change]")?.textContent.trim(),
+            null
+        ]),
+        matchImages: matchRows.map(row => [row.cells[1].querySelector("img")?.src, row.cells[2].querySelector("img")?.src])
     };
 }
 
@@ -383,7 +392,7 @@ function showDailyReportError() {
     });
 }
 
-function drawDailyReportTable(ctx, title, headers, rows, y, colWidths, rowImages = [], rowSizes = []) {
+function drawDailyReportTable(ctx, title, headers, rows, y, colWidths, rowImages = [], rowSizes = [], rowChanges = []) {
     const x = 60;
     const headerHeight = 34;
     const tableWidth = colWidths.reduce((total, width) => total + width, 0);
@@ -426,6 +435,7 @@ function drawDailyReportTable(ctx, title, headers, rows, y, colWidths, rowImages
         currentX = x;
         row.forEach((cell, index) => {
             const image = rowImages[rowIndex]?.[index];
+            const change = rowChanges[rowIndex]?.[index];
             const imageSize = rowSizes.length ? ([76, 60, 50][rowIndex] || 26) : 26;
             const textOffset = image ? imageSize + 22 : 12;
 
@@ -448,7 +458,17 @@ function drawDailyReportTable(ctx, title, headers, rows, y, colWidths, rowImages
                 }
             }
 
-            ctx.fillText(truncateCanvasText(ctx, cell, colWidths[index] - textOffset - 6), currentX + textOffset, y + rowHeight / 2 + 6);
+            const label = truncateCanvasText(ctx, cell, colWidths[index] - textOffset - (change ? 95 : 6));
+            const labelWidth = ctx.measureText(label).width;
+            ctx.fillStyle = "#111827";
+            ctx.fillText(label, currentX + textOffset, y + rowHeight / 2 + 6);
+
+            if (change) {
+                ctx.fillStyle = index === 1 ? "#198754" : "#dc3545";
+                ctx.font = "700 15px Arial";
+                ctx.fillText(change, currentX + textOffset + labelWidth + 7, y + rowHeight / 2 + 6);
+                ctx.font = "600 18px Arial";
+            }
             currentX += colWidths[index];
         });
 
@@ -480,7 +500,7 @@ async function createDailyReportCanvas() {
     const matchesHeight = Math.max(1, matchRows.length) * (matchImages.length ? 40 : 34) + 92;
 
     canvas.width = 1100;
-    canvas.height = 150 + rankingHeight + matchesHeight;
+    canvas.height = 190 + rankingHeight + matchesHeight;
 
     ctx.fillStyle = "#f4f7fb";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -495,7 +515,10 @@ async function createDailyReportCanvas() {
 
     let y = 158;
     y = drawDailyReportTable(ctx, "Mini ranking del dia", ["#", "Jugador", "V", "D", "Win rate", "Puntos", "Manos"], rankingRows, y, [70, 340, 75, 75, 120, 130, 250], rankingImages, rankingSizes);
-    drawDailyReportTable(ctx, "Pleitos del dia", ["Fecha", "Ganador", "Perdedor", "Resultado"], matchRows, y, [280, 300, 300, 180], matchImages);
+    y = drawDailyReportTable(ctx, "Pleitos del dia", ["Fecha", "Ganador", "Perdedor", "Resultado"], matchRows, y, [280, 300, 300, 180], matchImages, [], report.matchChanges);
+    ctx.fillStyle = "#4b5563";
+    ctx.font = "600 16px Arial";
+    ctx.fillText("Cambio en porcentaje: +22 equivale a +0.22 puntos porcentuales", 60, y + 12);
 
     return canvas;
 }
@@ -585,8 +608,10 @@ function printDailyReport() {
         report.matches.map((row, rowIndex) => `<tr>${row.map((cell, cellIndex) => {
             const image = report.matchImages[rowIndex]?.[cellIndex - 1];
             const thumbnail = image ? `<img src="${escapeHtml(image)}" alt="" class="character-thumbnail">` : "";
+            const change = report.matchChanges[rowIndex]?.[cellIndex];
+            const changeMarkup = change ? `<span class="win-rate-change ${cellIndex === 1 ? "positive" : "negative"}">${escapeHtml(change)}</span>` : "";
 
-            return `<td>${thumbnail}${escapeHtml(cell)}</td>`;
+            return `<td>${thumbnail}${escapeHtml(cell)}${changeMarkup}</td>`;
         }).join("")}</tr>`).join("") :
         `<tr><td colspan="4">Sin pleitos para este dia</td></tr>`;
 
@@ -611,6 +636,10 @@ function printDailyReport() {
                     .ranking-place-1 .ranking-character { height: 84px; width: 84px; }
                     .ranking-place-2 .ranking-character { height: 68px; width: 68px; }
                     .character-thumbnail { border-radius: 50%; height: 28px; margin-right: 6px; object-fit: cover; vertical-align: middle; width: 28px; }
+                    .win-rate-change { font-size: 12px; font-weight: 700; margin-left: 6px; white-space: nowrap; }
+                    .positive { color: #198754; }
+                    .negative { color: #dc3545; }
+                    .note { color: #4b5563; font-size: 12px; margin-top: 8px; }
                 </style>
             </head>
             <body>
@@ -628,6 +657,7 @@ function printDailyReport() {
                     <thead><tr><th>Fecha</th><th>Ganador</th><th>Perdedor</th><th>Resultado</th></tr></thead>
                     <tbody>${matchRows}</tbody>
                 </table>
+                <p class="note">Cambio en porcentaje: +22 equivale a +0.22 puntos porcentuales.</p>
             </body>
         </html>
     `);

@@ -149,13 +149,71 @@ class StatsTest extends TestCase
             ->assertViewHas('matches', fn ($m) => $m->isEmpty());
     }
 
+    public function test_filtered_matches_table_shows_the_season_win_rate_change(): void
+    {
+        $this->match('2025-06-03 10:00:00', $this->yulaw, $this->pan, 5, 2);
+        $match = GameMatch::query()->onDate('2025-06-03')->firstOrFail();
+
+        $response = $this->get(route('dashboard', ['season' => 2025, 'fecha_filtro' => '2025-06-03']));
+
+        $response->assertViewHas('matches', fn ($matches) => $matches->count() === 1);
+        $this->assertSame(['winner' => 8.33, 'loser' => -8.33], $response->viewData('matchWinRateChanges')[$match->id]);
+        $response->assertSee('+833')->assertSee('-833');
+    }
+
+    public function test_match_change_matches_the_displayed_victory_percentage_difference(): void
+    {
+        $winner = Player::factory()->create(['nombre' => 'Ryu']);
+        $loser = Player::factory()->create(['nombre' => 'King']);
+
+        for ($hour = 10; $hour < 16; $hour++) {
+            $won = $hour < 12;
+            $this->match("2025-07-05 {$hour}:00:00", $won ? $winner : $loser, $won ? $loser : $winner, 5, 4);
+        }
+
+        $this->match('2025-07-06 10:00:00', $winner, $loser, 5, 4);
+        $match = GameMatch::query()->onDate('2025-07-06')->firstOrFail();
+
+        $response = $this->get(route('dashboard', ['season' => 2025, 'fecha_filtro' => '2025-07-06']));
+
+        $this->assertSame(42.86, $response->viewData('seasonStats')->firstWhere('id', $winner->id)['porcentaje_victoria']);
+        $this->assertSame(['winner' => 9.53, 'loser' => -9.53], $response->viewData('matchWinRateChanges')[$match->id]);
+        $response->assertSee('+953')->assertSee('-953');
+    }
+
+    public function test_match_change_keeps_a_leading_zero_for_single_digit_values(): void
+    {
+        $winner = Player::factory()->create(['nombre' => 'Monchi']);
+        $loser = Player::factory()->create(['nombre' => 'Pan del Dia']);
+        GameMatch::factory()->count(91)->create([
+            'fecha' => '2025-07-05 10:00:00', 'ganador_id' => $winner->id, 'perdedor_id' => $loser->id,
+        ]);
+        GameMatch::factory()->count(9)->create([
+            'fecha' => '2025-07-05 11:00:00', 'ganador_id' => $loser->id, 'perdedor_id' => $winner->id,
+        ]);
+        $this->match('2025-07-06 10:00:00', $winner, $loser, 5, 4);
+        $match = GameMatch::query()->onDate('2025-07-06')->firstOrFail();
+
+        $response = $this->get(route('dashboard', ['season' => 2025, 'fecha_filtro' => '2025-07-06', 'report_fecha' => '2025-07-06']));
+
+        $this->assertSame(['winner' => 0.09, 'loser' => -0.09], $response->viewData('matchWinRateChanges')[$match->id]);
+        $response->assertSee('>+09</span>', false)->assertSee('>-09</span>', false);
+    }
+
     public function test_daily_report(): void
     {
         $response = $this->get(route('dashboard', ['season' => 2025, 'report_fecha' => '2025-06-01']));
+        $matchIds = GameMatch::query()->onDate('2025-06-01')->orderBy('fecha')->pluck('id');
 
         $response->assertViewHas('openDailyReport', true);
         $this->assertSame('Yulaw', $response->viewData('dailyRankings')->first()['nombre']);
         $this->assertCount(3, $response->viewData('dailyMatches'));
+        $this->assertSame(['winner' => 100.0, 'loser' => 0.0], $response->viewData('dailyWinRateChanges')[$matchIds[0]]);
+        $this->assertSame(['winner' => 33.33, 'loser' => -33.33], $response->viewData('dailyWinRateChanges')[$matchIds[2]]);
+        $response->assertSee('daily-win-rate-change text-success', false)
+            ->assertSee('daily-win-rate-change text-danger', false)
+            ->assertSee('+3333')
+            ->assertSee('-3333');
     }
 
     public function test_daily_report_orders_by_match_wins_before_points(): void
@@ -169,6 +227,16 @@ class StatsTest extends TestCase
 
         $this->assertSame(['Yulaw', 'Pan', 'Chun'], $ranking->pluck('nombre')->all());
         $this->assertSame([2, 3], $ranking->take(2)->pluck('puntos')->all());
+    }
+
+    public function test_daily_win_rate_change_uses_only_the_match_season(): void
+    {
+        $match = GameMatch::query()->onDate('2026-01-02')->firstOrFail();
+
+        $changes = $this->get(route('dashboard', ['report_fecha' => '2026-01-02']))
+            ->viewData('dailyWinRateChanges');
+
+        $this->assertSame(['winner' => 100.0, 'loser' => 0.0], $changes[$match->id]);
     }
 
     public function test_daily_report_uses_direct_win_rate_to_break_a_tie_in_victories(): void

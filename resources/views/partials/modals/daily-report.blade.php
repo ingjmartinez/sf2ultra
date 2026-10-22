@@ -66,6 +66,7 @@
 
                 <div>
                     <h5>Pleitos del dia</h5>
+                    <p class="small text-muted mb-2">Cambio en porcentaje de victoria: +22 equivale a +0.22 puntos porcentuales.</p>
                     <div class="table-responsive daily-matches-scroll">
                         <table class="table table-sm table-striped align-middle" id="dailyMatchesTable">
                             <thead>
@@ -84,13 +85,19 @@
                                             @if ($dailyMatch->ganadorImage)
                                                 <img src="{{ $dailyMatch->ganadorImage->url }}" alt="{{ $dailyMatch->ganadorImage->nombre }}" class="rounded-circle me-1" style="width: 28px; height: 28px; object-fit: cover;" loading="lazy">
                                             @endif
-                                            {{ $dailyMatch->ganador->nombre }}
+                                            <span class="daily-player-name">{{ $dailyMatch->ganador->nombre }}</span>
+                                            <span class="daily-win-rate-change text-success fw-bold" data-win-rate-change title="Cambio en porcentaje de victoria: +{{ number_format($dailyWinRateChanges[$dailyMatch->id]['winner'], 2) }} pp">
+                                                +{{ sprintf('%02d', (int) round($dailyWinRateChanges[$dailyMatch->id]['winner'] * 100)) }}
+                                            </span>
                                         </td>
                                         <td>
                                             @if ($dailyMatch->perdedorImage)
                                                 <img src="{{ $dailyMatch->perdedorImage->url }}" alt="{{ $dailyMatch->perdedorImage->nombre }}" class="rounded-circle me-1" style="width: 28px; height: 28px; object-fit: cover;" loading="lazy">
                                             @endif
-                                            {{ $dailyMatch->perdedor->nombre }}
+                                            <span class="daily-player-name">{{ $dailyMatch->perdedor->nombre }}</span>
+                                            <span class="daily-win-rate-change text-danger fw-bold" data-win-rate-change title="Cambio en porcentaje de victoria: -{{ number_format(abs($dailyWinRateChanges[$dailyMatch->id]['loser']), 2) }} pp">
+                                                -{{ sprintf('%02d', (int) round(abs($dailyWinRateChanges[$dailyMatch->id]['loser']) * 100)) }}
+                                            </span>
                                         </td>
                                         <td>{{ $dailyMatch->victorias_ganador }} - {{ $dailyMatch->victorias_perdedor }}</td>
                                     </tr>
