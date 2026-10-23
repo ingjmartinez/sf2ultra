@@ -52,7 +52,7 @@ class DashboardController extends Controller
             ->whereNotNull('ganador_id')
             ->whereNotNull('perdedor_id')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(10)->withQueryString();
 
         return view('dashboard', [
             'season' => $season,
@@ -68,7 +68,7 @@ class DashboardController extends Controller
             'dailyMatches' => $daily['matches'],
             'dailyWinRateChanges' => $daily['winRateChanges'],
             'matches' => $matches,
-            'matchWinRateChanges' => $this->stats->winRateChanges($matches),
+            'matchWinRateChanges' => $this->stats->winRateChanges($matches->getCollection()),
             'filterPlayer' => $filterPlayer,
             'filterDate' => $filterDate,
             'currentDate' => $currentDate,

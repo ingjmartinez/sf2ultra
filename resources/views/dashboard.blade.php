@@ -146,17 +146,14 @@
             </tbody>
         </table>
     </div>
+    {{ $matches->links() }}
 @endsection
 
 @push('styles')
-    <link href="{{ asset('velzon/libs/datatables/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
 @endpush
 
 @push('scripts')
     <script src="{{ asset('velzon/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('velzon/libs/datatables/jquery.min.js') }}"></script>
-    <script src="{{ asset('velzon/libs/datatables/dataTables.min.js') }}"></script>
-    <script src="{{ asset('velzon/libs/datatables/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         // Las filas se redibujan al paginar, por eso se delega el evento en la tabla.
         document.getElementById('matchesTable').addEventListener('submit', function (event) {
@@ -184,22 +181,6 @@
             });
         });
 
-        new DataTable('#matchesTable', {
-            order: [[0, 'desc']],
-            pageLength: 10,
-            lengthMenu: [10, 25, 50, 100],
-            columnDefs: [{ orderable: false, searchable: false, targets: 'no-sort' }],
-            language: {
-                search: 'Buscar:',
-                lengthMenu: 'Mostrar _MENU_ registros',
-                info: 'Mostrando _START_-_END_ de _TOTAL_ matches',
-                infoEmpty: 'Sin matches registrados',
-                infoFiltered: '(filtrado de _MAX_)',
-                zeroRecords: 'No se encontraron matches',
-                emptyTable: 'Sin matches registrados',
-                paginate: { first: '«', previous: '‹', next: '›', last: '»' }
-            }
-        });
     </script>
     <script>
         window.SF2 = {{ Illuminate\Support\Js::from([
