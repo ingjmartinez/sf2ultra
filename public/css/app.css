@@ -31,7 +31,7 @@
 .sidebar-players { --sidebar-button-bg: #f4edff; --sidebar-button-border: #dcc8f8; --sidebar-button-color: #7041a2; --sidebar-button-hover: #eadbff; }
 .sidebar-images { --sidebar-button-bg: #fff0f6; --sidebar-button-border: #f5c9dc; --sidebar-button-color: #a53d6c; --sidebar-button-hover: #ffe0ee; }
 .sidebar-season { --sidebar-button-bg: #fff4df; --sidebar-button-border: #f4d59d; --sidebar-button-color: #87590c; --sidebar-button-hover: #ffebc2; }
-.sidebar-match { --sidebar-button-bg: #d9f2e4; --sidebar-button-border: #75c99c; --sidebar-button-color: #176b43; --sidebar-button-hover: #bce8d0; }
+.sidebar-match { --sidebar-button-bg: #c62828; --sidebar-button-border: #a91f1f; --sidebar-button-color: #fff; --sidebar-button-hover: #a91f1f; }
 .sidebar-register-player { --sidebar-button-bg: #e4f5f3; --sidebar-button-border: #a4dad3; --sidebar-button-color: #216c65; --sidebar-button-hover: #cdf0eb; }
 .sidebar-report { --sidebar-button-bg: #fff0e8; --sidebar-button-border: #f1c3a8; --sidebar-button-color: #96532e; --sidebar-button-hover: #ffe3d2; }
 .sidebar-versus { --sidebar-button-bg: #fcecee; --sidebar-button-border: #efbec6; --sidebar-button-color: #a23d51; --sidebar-button-hover: #f9dce1; }
