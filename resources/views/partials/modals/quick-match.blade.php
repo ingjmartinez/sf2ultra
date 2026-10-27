@@ -15,17 +15,6 @@
                             <input class="form-control form-control-lg" id="fechaPleito" type="datetime-local" name="fecha" value="{{ $currentDateTimeLocal }}" required>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Formato del combate</label>
-                            <div class="btn-group w-100" role="group" aria-label="Formato del combate">
-                                <input class="btn-check" type="radio" name="formato_pleito" id="pleitoGanar5" value="5" checked>
-                                <label class="btn btn-outline-primary btn-lg" for="pleitoGanar5">Ganar 5 manos</label>
-
-                                <input class="btn-check" type="radio" name="formato_pleito" id="pleitoGanar3" value="3">
-                                <label class="btn btn-outline-primary btn-lg" for="pleitoGanar3">Ganar 3 manos</label>
-                            </div>
-                        </div>
-
                         <div class="row g-3">
                             @foreach ([1, 2] as $slot)
                                 <div class="col-12 col-md-6">
@@ -42,7 +31,7 @@
                         </div>
 
                         <div class="alert alert-info mt-3 mb-3" id="quickSetupMessage">
-                            Selecciona el formato y los dos jugadores.
+                            Selecciona los dos jugadores.
                         </div>
 
                         <button class="btn btn-success btn-lg w-100" type="button" id="quickStartButton">Iniciar Pleito</button>
@@ -56,7 +45,7 @@
                     <input type="hidden" name="victorias_perdedor" id="quickVictoriasPerdedor">
 
                     <div class="d-none" id="quickCounterStep">
-                        <div class="quick-match-title" id="quickMatchIntro">Este match es primero a ganar 5 manos.</div>
+                        <div class="quick-match-title" id="quickMatchIntro">Este match es primero a ganar 3 manos.</div>
 
                         <div class="quick-match-panel my-3">
                             <div class="quick-match-counter">
@@ -83,7 +72,7 @@
                         </div>
 
                         <div class="alert alert-info mb-3" id="quickMatchMessage">
-                            Suma manos hasta que alguien llegue al formato elegido.
+                            Suma manos hasta que alguien llegue a 3.
                         </div>
 
                         <div class="quick-share-actions" id="quickShareActions">

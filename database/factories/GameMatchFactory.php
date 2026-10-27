@@ -15,8 +15,8 @@ class GameMatchFactory extends Factory
             'fecha' => now(),
             'ganador_id' => Player::factory(),
             'perdedor_id' => Player::factory(),
-            'victorias_ganador' => 5,
-            'victorias_perdedor' => fake()->numberBetween(0, 4),
+            'victorias_ganador' => 3,
+            'victorias_perdedor' => fake()->numberBetween(0, 2),
         ];
     }
 }

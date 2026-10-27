@@ -72,7 +72,7 @@ class PlayerAccountTest extends TestCase
     public function test_a_player_can_view_ranking_and_dashboard_and_register_matches_but_nothing_else(): void
     {
         [$a, $b] = Player::factory()->count(2)->create();
-        $match = GameMatch::factory()->create(['ganador_id' => $a->id, 'perdedor_id' => $b->id, 'victorias_ganador' => 5, 'victorias_perdedor' => 1]);
+        $match = GameMatch::factory()->create(['ganador_id' => $a->id, 'perdedor_id' => $b->id, 'victorias_ganador' => 3, 'victorias_perdedor' => 1]);
         $this->actingAs(User::factory()->player()->create());
 
         $this->get(route('ranking.index'))->assertOk();
@@ -81,7 +81,7 @@ class PlayerAccountTest extends TestCase
             ->assertDontSee('edit-match-button', false);
         $this->post(route('matches.store'), [
             'fecha' => '2026-05-10T20:30', 'ganador_id' => $a->id, 'perdedor_id' => $b->id,
-            'victorias_ganador' => 5, 'victorias_perdedor' => 2,
+            'victorias_ganador' => 3, 'victorias_perdedor' => 2,
         ])->assertRedirect();
         $this->assertDatabaseCount('matches', 2);
 
@@ -116,7 +116,7 @@ class PlayerAccountTest extends TestCase
 
         $this->post(route('matches.store'), [
             'fecha' => '2026-05-10T20:30', 'ganador_id' => $winner->id, 'perdedor_id' => $loser->id,
-            'victorias_ganador' => 5, 'victorias_perdedor' => 2,
+            'victorias_ganador' => 3, 'victorias_perdedor' => 2,
         ]);
 
         Mail::assertNothingSent();

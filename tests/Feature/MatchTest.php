@@ -27,7 +27,7 @@ class MatchTest extends TestCase
             'fecha' => '2026-05-10T20:30',
             'ganador_id' => $winner->id,
             'perdedor_id' => $loser->id,
-            'victorias_ganador' => 5,
+            'victorias_ganador' => 3,
             'victorias_perdedor' => 2,
         ], $overrides);
     }
@@ -41,8 +41,8 @@ class MatchTest extends TestCase
             ->assertSessionHas('success');
 
         $this->assertDatabaseHas('matches', ['ganador_id' => $winner->id, 'perdedor_id' => $loser->id, 'victorias_perdedor' => 2]);
-        $this->assertDatabaseHas('players', ['id' => $winner->id, 'victorias' => 1, 'derrotas' => 0, 'puntos' => 3]);
-        $this->assertDatabaseHas('players', ['id' => $loser->id, 'victorias' => 0, 'derrotas' => 1, 'puntos' => -3]);
+        $this->assertDatabaseHas('players', ['id' => $winner->id, 'victorias' => 1, 'derrotas' => 0, 'puntos' => 1]);
+        $this->assertDatabaseHas('players', ['id' => $loser->id, 'victorias' => 0, 'derrotas' => 1, 'puntos' => -1]);
     }
 
     public function test_updating_a_match_reverts_old_totals_and_applies_new_ones(): void
@@ -119,7 +119,7 @@ class MatchTest extends TestCase
         $this->assertSame('2026-05-10 23:45:00', $match->fresh()->fecha->format('Y-m-d H:i:s'));
 
         // los totales de los players no se alteran por cambiar solo la fecha
-        $this->assertDatabaseHas('players', ['id' => $a->id, 'victorias' => 1, 'puntos' => 3]);
+        $this->assertDatabaseHas('players', ['id' => $a->id, 'victorias' => 1, 'puntos' => 1]);
     }
 
     public function test_deleting_a_match_reverts_player_totals(): void
@@ -169,6 +169,7 @@ class MatchTest extends TestCase
 
         $this->post(route('matches.store'), $this->payload($a, $a))->assertSessionHasErrors('perdedor_id');
         $this->post(route('matches.store'), $this->payload($a, $b, ['victorias_ganador' => 4]))->assertSessionHasErrors('victorias_ganador');
+        $this->post(route('matches.store'), $this->payload($a, $b, ['victorias_ganador' => 5]))->assertSessionHasErrors('victorias_ganador');
         $this->post(route('matches.store'), $this->payload($a, $b, ['victorias_ganador' => 3, 'victorias_perdedor' => 3]))->assertSessionHasErrors('victorias_perdedor');
         $this->post(route('matches.store'), $this->payload($a, $b, ['ganador_id' => 9999]))->assertSessionHasErrors('ganador_id');
         $this->post(route('matches.store'), $this->payload($a, $b, ['fecha' => '']))->assertSessionHasErrors('fecha');

@@ -63,7 +63,7 @@ const quickMatchScores = {
 let quickMatchStarted = false;
 
 function getQuickTarget() {
-    return parseInt(document.querySelector("input[name='formato_pleito']:checked").value, 10);
+    return 3;
 }
 
 function getSelectedPlayerName(select, defaultName) {
@@ -844,14 +844,6 @@ document.querySelectorAll("[data-quick-player]").forEach(button => {
     });
 });
 
-document.querySelectorAll("input[name='formato_pleito']").forEach(option => {
-    option.addEventListener("change", () => {
-        resetQuickScores();
-        validateQuickSetup();
-        updateQuickMatch();
-    });
-});
-
 quickPlayer1.addEventListener("change", () => {
     validateQuickSetup();
     updateQuickMatch();
@@ -939,7 +931,7 @@ quickMatchForm.addEventListener("submit", event => {
 quickModal.addEventListener("hidden.bs.modal", () => {
     quickMatchForm.reset();
     showQuickSetup();
-    setQuickSetupMessage("Selecciona el formato y los dos jugadores.", "info");
+    setQuickSetupMessage("Selecciona los dos jugadores.", "info");
 });
 
 showQuickSetup();

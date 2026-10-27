@@ -28,7 +28,7 @@ class AuthTest extends TestCase
         $this->post(route('players.store'), ['nombre' => 'X'])->assertRedirect(route('login'));
         $this->post(route('matches.store'), [
             'fecha' => '2026-01-01T10:00', 'ganador_id' => $a->id, 'perdedor_id' => $b->id,
-            'victorias_ganador' => 5, 'victorias_perdedor' => 1,
+            'victorias_ganador' => 3, 'victorias_perdedor' => 1,
         ])->assertRedirect(route('login'));
         $this->put('/matches/1', [])->assertRedirect(route('login'));
 

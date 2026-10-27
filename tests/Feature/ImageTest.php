@@ -86,7 +86,7 @@ class ImageTest extends TestCase
         [$ryu, $ken] = Image::factory()->count(2)->create();
         $payload = [
             'fecha' => '2026-05-10T20:30', 'ganador_id' => $winner->id, 'perdedor_id' => $loser->id,
-            'victorias_ganador' => 5, 'victorias_perdedor' => 2,
+            'victorias_ganador' => 3, 'victorias_perdedor' => 2,
         ];
 
         $this->post(route('matches.store'), $payload + ['ganador_image_id' => $ryu->id, 'perdedor_image_id' => $ken->id])
@@ -114,7 +114,7 @@ class ImageTest extends TestCase
 
         $this->post(route('matches.store'), [
             'fecha' => '2026-05-10T20:30', 'ganador_id' => $winner->id, 'perdedor_id' => $loser->id,
-            'victorias_ganador' => 5, 'victorias_perdedor' => 2,
+            'victorias_ganador' => 3, 'victorias_perdedor' => 2,
         ])->assertSessionHasNoErrors();
 
         $this->get(route('dashboard', ['season' => 2026, 'report_fecha' => '2026-05-10']))
