@@ -54,6 +54,21 @@ const quickPerdedorImageId = document.getElementById("quickPerdedorImageId");
 function getQuickImage(slot) {
     return document.querySelector(`input[name='quick_imagen_${slot}']:checked`)?.value || "";
 }
+
+function selectQuickPlayerImage(select, slot) {
+    const imageId = select.selectedOptions[0]?.dataset.imageId || "";
+    const inputs = document.querySelectorAll(`input[name='quick_imagen_${slot}']`);
+    const selectedInput = Array.from(inputs).find(input => input.value === imageId);
+
+    inputs.forEach(input => {
+        input.checked = input === selectedInput;
+        input.closest("label").style.order = input === selectedInput ? "-1" : "";
+    });
+
+    if (selectedInput) {
+        selectedInput.closest("label").parentElement.scrollLeft = 0;
+    }
+}
 const quickVictoriasGanador = document.getElementById("quickVictoriasGanador");
 const quickVictoriasPerdedor = document.getElementById("quickVictoriasPerdedor");
 const quickMatchScores = {
@@ -845,11 +860,13 @@ document.querySelectorAll("[data-quick-player]").forEach(button => {
 });
 
 quickPlayer1.addEventListener("change", () => {
+    selectQuickPlayerImage(quickPlayer1, 1);
     validateQuickSetup();
     updateQuickMatch();
 });
 
 quickPlayer2.addEventListener("change", () => {
+    selectQuickPlayerImage(quickPlayer2, 2);
     validateQuickSetup();
     updateQuickMatch();
 });

@@ -57,7 +57,7 @@ class DashboardController extends Controller
         return view('dashboard', [
             'season' => $season,
             'availableSeasons' => $this->stats->availableSeasons($currentYear, $season),
-            'players' => Player::orderBy('nombre')->get(['id', 'nombre']),
+            'players' => Player::orderBy('nombre')->get(['id', 'nombre', 'image_id']),
             'images' => Image::orderBy('nombre')->get(),
             'rankings' => $ranking,
             'rankingByPlayerId' => $ranking->pluck('ranking', 'id'),

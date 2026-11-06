@@ -22,7 +22,7 @@
                                     <select class="form-select form-select-lg" id="quickPlayer{{ $slot }}" required>
                                         <option value="" selected disabled>Seleccione</option>
                                         @foreach ($players as $player)
-                                            <option value="{{ $player->id }}" data-ranking="{{ $rankingByPlayerId[$player->id] ?? '-' }}">{{ $player->nombre }}</option>
+                                            <option value="{{ $player->id }}" data-ranking="{{ $rankingByPlayerId[$player->id] ?? '-' }}" data-image-id="{{ $player->image_id }}">{{ $player->nombre }}</option>
                                         @endforeach
                                     </select>
                                     @include('partials.modals.quick-image-picker', ['slot' => $slot])

@@ -128,4 +128,16 @@ class ImageTest extends TestCase
 
         $this->get(route('players.index'))->assertOk()->assertSee('name="image_id"', false)->assertSee($image->url, false);
     }
+
+    public function test_quick_match_player_options_include_their_saved_image(): void
+    {
+        $image = Image::factory()->create();
+        $player = Player::factory()->create(['image_id' => $image->id]);
+        $playerWithoutImage = Player::factory()->create(['image_id' => null]);
+
+        $this->get(route('dashboard'))
+            ->assertDontSee('Ninguno')
+            ->assertSee('data-image-id="'.$image->id.'">'.$player->nombre.'</option>', false)
+            ->assertSee('data-image-id="">'.$playerWithoutImage->nombre.'</option>', false);
+    }
 }
