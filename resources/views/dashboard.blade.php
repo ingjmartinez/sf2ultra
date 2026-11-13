@@ -54,7 +54,7 @@
         </table>
     </div>
 
-    <h2>Matches Points - Season {{ $season }}</h2>
+    <h2 class="h4 mt-4">Matches Points - Season {{ $season }}</h2>
     <p class="small text-muted">Cambio en porcentaje de victoria: +22 equivale a +0.22 puntos porcentuales.</p>
     <form action="{{ route('dashboard') }}" method="get">
         <input type="hidden" name="season" value="{{ $season }}">
@@ -81,7 +81,7 @@
         </div>
     </form>
 
-    <div class="table-responsive">
+    <div class="table-responsive matches-table-scroll">
         <table class="table table-sm table-striped align-middle w-100" id="matchesTable">
             <thead>
                 <tr>
@@ -146,7 +146,9 @@
             </tbody>
         </table>
     </div>
-    {{ $matches->links() }}
+    <div class="matches-table-pagination">
+        {{ $matches->onEachSide(1)->links('pagination::bootstrap-5') }}
+    </div>
 @endsection
 
 @push('styles')
