@@ -971,6 +971,30 @@ quickRematchButton.addEventListener("click", () => {
     showQuickCounter();
 });
 
+async function refreshQuickMatchTables() {
+    const response = await fetch(window.location.href, {
+        headers: { Accept: "text/html" },
+        cache: "no-store"
+    });
+
+    if (!response.ok || response.redirected) {
+        throw new Error("No se pudo actualizar la tabla de pleitos.");
+    }
+
+    const dashboard = new DOMParser().parseFromString(await response.text(), "text/html");
+    const table = dashboard.getElementById("matchesTable");
+    const statistics = dashboard.getElementById("seasonStatsTable");
+    const pagination = dashboard.querySelector(".matches-table-pagination");
+
+    if (!table || !statistics || !pagination) {
+        throw new Error("No se pudo actualizar la tabla de pleitos.");
+    }
+
+    document.getElementById("matchesTable").innerHTML = table.innerHTML;
+    document.getElementById("seasonStatsTable").innerHTML = statistics.innerHTML;
+    document.querySelector(".matches-table-pagination").innerHTML = pagination.innerHTML;
+}
+
 quickMatchForm.addEventListener("submit", async event => {
     event.preventDefault();
     if (quickMatchSaving || quickMatchSaved) {
@@ -1006,6 +1030,12 @@ quickMatchForm.addEventListener("submit", async event => {
 
         quickMatchSaved = true;
         quickDashboardNeedsRefresh = true;
+        try {
+            await refreshQuickMatchTables();
+        } catch (error) {
+            window.location.reload();
+            return;
+        }
         quickCounterStep.classList.add("d-none");
         quickMatchFooter.classList.add("d-none");
         quickSavedStep.classList.remove("d-none");
@@ -1110,13 +1140,17 @@ const modalEstadisticasElement = document.getElementById("modalEstadisticas");
 const modalEstadisticas = new bootstrap.Modal(modalEstadisticasElement);
 const cboPlayerEstadistica = document.getElementById("cboPlayerEstadistica");
 
-document.querySelectorAll(".btn-ver-estadisticas").forEach(button => {
-    button.addEventListener("click", () => {
-        const playerId = button.dataset.playerId;
-        cboPlayerEstadistica.value = playerId;
-        cboPlayerEstadistica.dispatchEvent(new Event("change"));
-        modalEstadisticas.show();
-    });
+document.getElementById("seasonStatsTable").addEventListener("click", event => {
+    const button = event.target.closest(".btn-ver-estadisticas");
+
+    if (!button) {
+        return;
+    }
+
+    const playerId = button.dataset.playerId;
+    cboPlayerEstadistica.value = playerId;
+    cboPlayerEstadistica.dispatchEvent(new Event("change"));
+    modalEstadisticas.show();
 });
 
 cboPlayerEstadistica.addEventListener("change", () => {

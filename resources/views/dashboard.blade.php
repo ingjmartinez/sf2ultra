@@ -17,7 +17,7 @@
 
     <h2>Estadisticas - Season {{ $season }}</h2>
     <div class="table-responsive">
-        <table class="table table-sm table-striped">
+        <table class="table table-sm table-striped" id="seasonStatsTable">
             <tr>
                 <th>Ranking Porcentaje</th>
                 <th>Jugador</th>
