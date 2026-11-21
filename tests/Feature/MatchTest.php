@@ -45,6 +45,34 @@ class MatchTest extends TestCase
         $this->assertDatabaseHas('players', ['id' => $loser->id, 'victorias' => 0, 'derrotas' => 1, 'puntos' => -1]);
     }
 
+    public function test_quick_match_and_rematch_are_saved_as_separate_matches(): void
+    {
+        [$a, $b] = Player::factory()->count(2)->create();
+
+        $this->postJson(route('matches.store'), $this->payload($a, $b))
+            ->assertCreated()
+            ->assertJsonPath('message', 'Pleito guardado correctamente.');
+        $this->postJson(route('matches.store'), $this->payload($b, $a))
+            ->assertCreated();
+
+        $this->assertDatabaseCount('matches', 2);
+        $this->assertDatabaseHas('matches', ['ganador_id' => $a->id, 'perdedor_id' => $b->id]);
+        $this->assertDatabaseHas('matches', ['ganador_id' => $b->id, 'perdedor_id' => $a->id]);
+        $this->assertDatabaseHas('players', ['id' => $a->id, 'victorias' => 1, 'derrotas' => 1, 'puntos' => 0]);
+        $this->assertDatabaseHas('players', ['id' => $b->id, 'victorias' => 1, 'derrotas' => 1, 'puntos' => 0]);
+    }
+
+    public function test_invalid_quick_match_returns_errors_without_saving(): void
+    {
+        $player = Player::factory()->create();
+
+        $this->postJson(route('matches.store'), $this->payload($player, $player))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('perdedor_id');
+
+        $this->assertDatabaseCount('matches', 0);
+    }
+
     public function test_updating_a_match_reverts_old_totals_and_applies_new_ones(): void
     {
         [$a, $b] = Player::factory()->count(2)->create();

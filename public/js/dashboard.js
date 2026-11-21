@@ -41,11 +41,15 @@ const quickMessage = document.getElementById("quickMatchMessage");
 const quickMatchIntro = document.getElementById("quickMatchIntro");
 const quickShareActions = document.getElementById("quickShareActions");
 const quickShareImageButton = document.getElementById("quickShareImageButton");
-const quickPrintButton = document.getElementById("quickPrintButton");
+const quickRegisterButton = document.getElementById("quickRegisterButton");
 const dailyReportShareButton = document.getElementById("dailyReportShareButton");
 const dailyReportImageButton = document.getElementById("dailyReportImageButton");
 const dailyReportPrintButton = document.getElementById("dailyReportPrintButton");
 const quickSaveButton = document.getElementById("quickSaveButton");
+const quickRematchButton = document.getElementById("quickRematchButton");
+let quickMatchSaving = false;
+let quickMatchSaved = false;
+let quickDashboardNeedsRefresh = false;
 const quickGanadorId = document.getElementById("quickGanadorId");
 const quickPerdedorId = document.getElementById("quickPerdedorId");
 const quickGanadorImageId = document.getElementById("quickGanadorImageId");
@@ -779,6 +783,11 @@ function printQuickResult() {
 }
 
 function updateQuickMatch() {
+    if (quickMatchSaving || quickMatchSaved) {
+        return;
+    }
+    quickRegisterButton.classList.add("d-none");
+    quickRegisterButton.disabled = true;
     const target = getQuickTarget();
     const winner = getQuickWinner();
     const player1Name = getSelectedPlayerName(quickPlayer1, "Player 1");
@@ -913,7 +922,21 @@ quickShareImageButton.addEventListener("click", () => {
     }, "image/png");
 });
 
-quickPrintButton.addEventListener("click", printQuickResult);
+quickRegisterButton.addEventListener("click", () => {
+    if (!quickMatchSaved || quickMatchSaving) {
+        return;
+    }
+
+    quickMatchSaved = false;
+    quickMatchForm.reset();
+    selectQuickPlayerImage(quickPlayer1, 1);
+    selectQuickPlayerImage(quickPlayer2, 2);
+    quickRematchButton.classList.add("d-none");
+    quickSaveButton.classList.remove("d-none");
+    quickEditButton.disabled = false;
+    showQuickSetup();
+    setQuickSetupMessage("Selecciona los dos jugadores.", "info");
+});
 dailyReportShareButton.addEventListener("click", shareDailyReport);
 dailyReportImageButton.addEventListener("click", exportDailyReportImage);
 dailyReportPrintButton.addEventListener("click", printDailyReport);
@@ -931,7 +954,25 @@ function showSavingResults(form) {
     setTimeout(() => form.submit(), 100);
 }
 
-quickMatchForm.addEventListener("submit", event => {
+quickRematchButton.addEventListener("click", () => {
+    if (!quickMatchSaved || quickMatchSaving) {
+        return;
+    }
+
+    quickMatchSaved = false;
+    quickRematchButton.classList.add("d-none");
+    quickSaveButton.classList.remove("d-none");
+    quickEditButton.disabled = false;
+    const now = new Date();
+    document.getElementById("fechaPleito").value = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    showQuickCounter();
+});
+
+quickMatchForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (quickMatchSaving || quickMatchSaved) {
+        return;
+    }
     updateQuickMatch();
 
     if (!quickMatchStarted || quickSaveButton.disabled) {
@@ -941,11 +982,53 @@ quickMatchForm.addEventListener("submit", event => {
     }
 
     event.preventDefault();
+    const body = new FormData(quickMatchForm);
+    quickMatchSaving = true;
+    quickRegisterButton.disabled = true;
     quickSaveButton.disabled = true;
-    showSavingResults(quickMatchForm);
+    quickEditButton.disabled = true;
+    document.querySelectorAll("[data-quick-player]").forEach(button => button.disabled = true);
+    setQuickMessage("Guardando pleito...", "info");
+
+    try {
+        const response = await fetch(quickMatchForm.action, {
+            method: "POST",
+            headers: { Accept: "application/json" },
+            body
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(Object.values(data.errors || {}).flat().join(" ") || data.message || "No se pudo guardar el pleito.");
+        }
+
+        quickMatchSaved = true;
+        quickDashboardNeedsRefresh = true;
+        quickSaveButton.classList.add("d-none");
+        quickRematchButton.classList.remove("d-none");
+        quickRegisterButton.classList.remove("d-none");
+        setQuickMessage("Pleito guardado. Pulsa Rematch para repetir con los mismos jugadores.", "success");
+    } catch (error) {
+        quickMatchSaving = false;
+        quickEditButton.disabled = false;
+        updateQuickMatch();
+        setQuickMessage(error.message || "No se pudo guardar el pleito. Intenta nuevamente.", "danger");
+    } finally {
+        quickMatchSaving = false;
+        quickRegisterButton.disabled = !quickMatchSaved;
+    }
+});
+
+quickModal.addEventListener("hide.bs.modal", event => {
+    if (quickMatchSaving) {
+        event.preventDefault();
+    }
 });
 
 quickModal.addEventListener("hidden.bs.modal", () => {
+    if (quickDashboardNeedsRefresh) {
+        window.location.reload();
+        return;
+    }
     quickMatchForm.reset();
     showQuickSetup();
     setQuickSetupMessage("Selecciona los dos jugadores.", "info");

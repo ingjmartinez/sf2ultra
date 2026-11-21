@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SaveMatchRequest;
 use App\Models\GameMatch;
 use App\Services\MatchService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 
@@ -12,10 +13,14 @@ class MatchController extends Controller
 {
     public function __construct(private readonly MatchService $matches) {}
 
-    public function store(SaveMatchRequest $request): RedirectResponse
+    public function store(SaveMatchRequest $request): RedirectResponse|JsonResponse
     {
         $data = $request->matchData();
         $this->matches->create($data + ['user_id' => $request->user()->id]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Pleito guardado correctamente.'], 201);
+        }
 
         return $this->backToSeason($data['fecha'])
             ->with('success', 'Match registrado y estadisticas actualizadas.');
