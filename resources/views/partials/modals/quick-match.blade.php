@@ -77,7 +77,13 @@
 
                         <div class="quick-share-actions" id="quickShareActions">
                             <button class="btn btn-outline-primary" type="button" id="quickEditButton">Cambiar datos</button>
-                            <button class="btn btn-danger d-none" type="button" id="quickRegisterButton" disabled>Registrar Pleito</button>
+                        </div>
+                    </div>
+                    <div class="d-none" id="quickSavedStep">
+                        <div class="alert alert-success" role="status">Pleito guardado correctamente.</div>
+                        <div class="d-flex flex-column gap-3">
+                            <button type="button" class="btn btn-success btn-lg d-none" id="quickRematchButton">Rematch</button>
+                            <button class="btn btn-danger btn-lg d-none" type="button" id="quickRegisterButton" disabled>Registrar Pleito</button>
                         </div>
                     </div>
                 </div>
@@ -85,7 +91,6 @@
                     <button class="btn btn-outline-primary" type="button" id="quickShareImageButton">Compartir imagen</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success btn-lg" id="quickSaveButton" disabled>Guardar Pleito</button>
-                    <button type="button" class="btn btn-success btn-lg d-none" id="quickRematchButton">Rematch</button>
                 </div>
             </form>
         </div>

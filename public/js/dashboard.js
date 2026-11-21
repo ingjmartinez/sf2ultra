@@ -25,6 +25,7 @@ const quickMatchForm = document.getElementById("quickMatchForm");
 const quickModal = document.getElementById("modalPleitoMovil");
 const quickSetupStep = document.getElementById("quickSetupStep");
 const quickCounterStep = document.getElementById("quickCounterStep");
+const quickSavedStep = document.getElementById("quickSavedStep");
 const quickMatchFooter = document.getElementById("quickMatchFooter");
 const quickStartButton = document.getElementById("quickStartButton");
 const quickEditButton = document.getElementById("quickEditButton");
@@ -186,6 +187,7 @@ function validateQuickSetup() {
 }
 
 function showQuickSetup() {
+    quickSavedStep.classList.add("d-none");
     quickMatchStarted = false;
     quickSetupStep.classList.remove("d-none");
     quickCounterStep.classList.add("d-none");
@@ -197,6 +199,7 @@ function showQuickSetup() {
 }
 
 function showQuickCounter() {
+    quickSavedStep.classList.add("d-none");
     const target = getQuickTarget();
 
     quickMatchStarted = true;
@@ -1003,10 +1006,15 @@ quickMatchForm.addEventListener("submit", async event => {
 
         quickMatchSaved = true;
         quickDashboardNeedsRefresh = true;
+        quickCounterStep.classList.add("d-none");
+        quickMatchFooter.classList.add("d-none");
+        quickSavedStep.classList.remove("d-none");
+        resetQuickScores();
+        clearQuickHiddenFields();
         quickSaveButton.classList.add("d-none");
         quickRematchButton.classList.remove("d-none");
         quickRegisterButton.classList.remove("d-none");
-        setQuickMessage("Pleito guardado. Pulsa Rematch para repetir con los mismos jugadores.", "success");
+        quickRematchButton.focus();
     } catch (error) {
         quickMatchSaving = false;
         quickEditButton.disabled = false;
